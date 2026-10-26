@@ -4,148 +4,280 @@
 
 <br/>
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Async-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
-[![React](https://img.shields.io/badge/React-Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://vitejs.dev)
-[![License](https://img.shields.io/badge/License-MIT-F7DF1E?style=for-the-badge)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Active-00E676?style=for-the-badge)]()
+<p>
+  <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
+  <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI-Async-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"/></a>
+  <a href="https://postgresql.org"><img src="https://img.shields.io/badge/PostgreSQL-16+-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-18+-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"/></a>
+  <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-5+-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/></a>
+  <img src="https://img.shields.io/badge/License-MIT-F7DF1E?style=for-the-badge" alt="MIT"/>
+  <img src="https://img.shields.io/badge/Status-Active_Development-00E676?style=for-the-badge" alt="Active"/>
+</p>
+
+<h1>🛡️ CyberTrack Nexus</h1>
+
+<h3>Cybersecurity Education Intelligence Platform</h3>
+<p><b>Nandha Engineering College — Dept. of Computer Science &amp; Engineering (Cyber Security)</b></p>
+<p><i>Production-grade · Role-aware · Real-time · Built for educators, by engineers.</i></p>
+<br/>
+
+> Tracks every student's cybersecurity journey across **TryHackMe, Hack The Box, PortSwigger, and Cisco NetAcad** — with mentor workflows, evidence verification, and live analytics — all behind a hardened JWT API.
 
 <br/>
 
-# 🛡️ CyberTrack Nexus
-
-### Cybersecurity Education Intelligence Platform
-**Nandha Engineering College — Dept. of Computer Science & Engineering**
-
-*Production-grade · Role-aware · Real-time*
-
-*Tracks every student's cybersecurity journey — platform accounts, certifications, mentor reviews, and live analytics — behind a hardened JWT-authenticated API.*
-
-<br/>
-
-[![API Docs](https://img.shields.io/badge/📖_API_Reference-6c63ff?style=flat-square)](#-api-reference)
-[![Quick Start](https://img.shields.io/badge/🚀_Quick_Start-009688?style=flat-square)](#-quick-start)
-[![Architecture](https://img.shields.io/badge/🏗️_Architecture-ff6b6b?style=flat-square)](#️-architecture)
-[![Security](https://img.shields.io/badge/🔐_Security-f7931e?style=flat-square)](#-security-model)
+| [📖 API Reference](#-api-reference) | [🚀 Quick Start](#-quick-start) | [🏗️ Architecture](#️-architecture) | [🗄️ Data Model](#️-data-model) | [🔐 Security](#-security-model) | [🤝 Contributing](#-contributing) |
+|:---:|:---:|:---:|:---:|:---:|:---:|
 
 </div>
 
 ---
 
-## ✨ What is CyberTrack Nexus?
+## ✨ Platform Overview
 
-**CyberTrack Nexus** is an institutional-grade intelligence platform purpose-built for cybersecurity education departments. It aggregates student learning activity from external platforms *(TryHackMe, Hack The Box, LeetCode, Cisco NetAcad, etc.)*, manages evidence submissions, orchestrates mentor–student workflows, and delivers real-time analytics — all behind a hardened, JWT-authenticated REST API with fine-grained RBAC.
-
-> 🏫 Built for **Nandha Engineering College CSE (Cyber Security)** — architected to scale to any engineering institution.
+**CyberTrack Nexus** is an institutional intelligence system for cybersecurity education departments. It aggregates student learning activity from leading platforms, manages evidence submissions through a structured review pipeline, orchestrates mentor–student workflows, and delivers live analytics — all from a single, secured dashboard.
 
 <br/>
 
-## 🎯 Core Features
+## 🎯 Feature Matrix
 
-| | Feature | Description |
-|:---:|---|---|
-| 🎓 | **Student Registry** | Bulk-import CSV, paginate, search, and manage the full student cohort with department isolation |
-| 🔗 | **Platform Linking** | Connect students to cybersecurity platforms with full verification & sync status lifecycle |
-| 📄 | **Evidence Management** | Students upload PDF/PNG certificates; staff review, approve, or request revisions |
-| 🧑‍🏫 | **Mentor Assignment** | HODs assign mentors; staff see *only* their assigned students — IDOR-enforced at SQL level |
-| 📊 | **Live Analytics** | Real-time metrics: platform adoption, sync health, verified certificates, intervention flags |
-| 🔒 | **4-Tier RBAC** | Admin → HOD → Staff → Student — every endpoint independently role-guarded |
-| 🪵 | **Immutable Audit Trail** | Every sensitive mutation logged to `audit_logs` — tamper-evident action history |
-| 🔔 | **Notifications** | In-app alerts for reviews, sync failures, mentor notes, and intervention flags |
-| ⚙️ | **Sync Engine** | Background workers sync platform accounts with health/stale/failed state tracking |
-| 🛡️ | **Security Hardened** | Rate limiting, strict CORS, no stack trace leakage, UUID storage keys |
+| Module | Status | Description |
+|---|:---:|---|
+| 🎓 **Student Registry** | ✅ Live | Bulk CSV import · paginated search · department isolation · section/year filters |
+| 🔗 **Platform Linking** | ✅ Live | Link TryHackMe, HTB, PortSwigger, Cisco NetAcad accounts with verification lifecycle |
+| 📄 **Evidence Management** | ✅ Live | Students upload PDF/PNG/JPG; staff review via Approve · Reject · Needs Revision |
+| 🧑‍🏫 **Mentor Workspace** | ✅ Live | HOD assigns mentors; staff see only assigned students — IDOR-enforced at SQL level |
+| 📊 **Analytics Dashboard** | ✅ Live | Live metrics: active students, platform adoption, sync health, verified certs |
+| 🔒 **4-Tier RBAC** | ✅ Live | Admin → HOD → Staff → Student — every endpoint independently role-guarded |
+| 🪵 **Audit Trail** | ✅ Live | Immutable `audit_logs` — every mutation, review, and import captured |
+| 🔔 **Notifications** | ✅ Live | In-app alerts: reviews, sync failures, mentor notes, intervention flags |
+| ⚙️ **Sync Engine** | 🔄 In Progress | Background workers for platform API polling with health/stale/failed states |
+| 🌐 **Integration Health** | 🔄 In Progress | Sync job history, error diagnostics, retry management |
+| 📜 **Certifications** | 🔄 In Progress | Certificate verification tracking across all platforms |
+| ⚙️ **Settings & Admin** | 🔄 In Progress | Department config, platform management, user administration |
 
 ---
 
 ## 🏗️ Architecture
 
+### System Layout
+
 ```
 cybertrack-nexus/
 │
-├── backend/                          # ⚡ FastAPI async Python API
+├── backend/                           # ⚡ FastAPI async Python API (Port 8000)
 │   └── app/
-│       ├── main.py                   # App factory · CORS · Rate limiter · Routers
+│       ├── main.py                    # App factory · CORS · Rate limiter · Routers
 │       ├── api/v1/endpoints/
-│       │   ├── auth.py               # 🔑 Login · Logout · /me
-│       │   ├── students.py           # 👥 CRUD + bulk import (preview → commit)
-│       │   ├── platforms.py          # 🖥️  Platform registry + account linking
-│       │   ├── evidence.py           # 📄 File upload · Review workflow · Audit
-│       │   └── analytics.py          # 📊 Overview metrics · Platform breakdown
-│       ├── models/models.py          # 🗄️  All SQLAlchemy ORM models (PostgreSQL)
+│       │   ├── auth.py                # 🔑 Login · Logout · /me
+│       │   ├── students.py            # 👥 List · Get · Patch · Import preview/commit
+│       │   ├── platforms.py           # 🖥️  Registry · Account link/unlink
+│       │   ├── evidence.py            # 📄 Upload · List · Review (approve/reject)
+│       │   └── analytics.py           # 📊 Overview metrics · Platform breakdown
+│       ├── models/models.py           # 🗄️  Complete SQLAlchemy ORM schema
 │       ├── core/
-│       │   ├── config.py             # ⚙️  Pydantic settings (fully env-driven)
-│       │   └── dependencies.py       # 🔐 JWT auth + typed RBAC guards
-│       ├── db/database.py            # 🐘 Async SQLAlchemy engine + session factory
-│       ├── security/jwt.py           # 🔑 Token creation · verification · bcrypt
-│       ├── workers/                  # ⚙️  Background sync workers
-│       ├── integrations/             # 🌐 External platform API adapters
-│       ├── analytics/                # 📈 Computation engines
-│       ├── repositories/             # 🗃️  Data access layer
-│       └── tests/                    # 🧪 Test suite
+│       │   ├── config.py              # ⚙️  Pydantic settings (fully env-driven)
+│       │   └── dependencies.py        # 🔐 JWT auth + typed RBAC dependency guards
+│       ├── db/
+│       │   ├── database.py            # 🐘 Async SQLAlchemy engine + session factory
+│       │   └── seed.py                # 🌱 Bootstrap: dept + HOD + all 4 platforms
+│       ├── security/jwt.py            # 🔑 Token creation · verification · bcrypt
+│       ├── workers/                   # ⚙️  Async background sync task workers
+│       ├── integrations/              # 🌐 Platform API adapter layer
+│       ├── analytics/                 # 📈 Metric computation engines
+│       ├── repositories/              # 🗃️  Complex query / data access patterns
+│       ├── services/                  # 💼 Business logic layer
+│       └── tests/                     # 🧪 Test suite
 │
-├── frontend/                         # ⚛️  React + Vite + TypeScript SPA
-├── docs/                             # 📖 Architecture & API docs
-├── infra/                            # 🐳 Docker / K8s / IaC
-└── .github/                          # 🤖 CI/CD GitHub Actions
+├── frontend/                          # ⚛️  React 18 + Vite + TypeScript (Port 5173)
+│   └── src/
+│       ├── App.tsx                    # Router + auth guards + QueryClient
+│       ├── pages/
+│       │   ├── LoginPage.tsx          # Public — JWT login form
+│       │   ├── OverviewPage.tsx       # Dashboard home (/)
+│       │   ├── StudentsPage.tsx       # Student list + import (/students)
+│       │   ├── PlatformsPage.tsx      # Platform accounts (/platforms)
+│       │   ├── EvidencePage.tsx       # Evidence upload + review (/evidence)
+│       │   └── AnalyticsPage.tsx      # Analytics charts (/analytics)
+│       ├── features/auth/             # AuthContext + useAuth hook
+│       ├── components/layout/         # AppShell · Sidebar · TopBar
+│       └── lib/                       # API client · utilities · TypeScript types
+│
+├── docs/assets/                       # 📖 Banner image + architecture diagrams
+├── infra/                             # 🐳 Docker / K8s / Infrastructure-as-Code
+└── .github/                           # 🤖 CI/CD GitHub Actions workflows
 ```
 
-### 🔄 Request Lifecycle
+### Request Lifecycle
 
-```
-Client
-  │
-  ▼
-[CORS Middleware] → [Request-ID Middleware] → [Rate Limiter (slowapi)]
-  │
-  ▼
-[JWT Bearer Auth] → [RBAC Role Guard]
-  │
-  ▼
-[Endpoint Handler] → [Async PostgreSQL Session]
-  │
-  ▼
-[Pydantic Response Model] → JSON Response (with X-Request-ID header)
+```mermaid
+flowchart LR
+    C([Browser / API Client])
+
+    subgraph MW["Middleware Stack"]
+        direction TB
+        A[CORS Middleware] --> B[Request-ID Injector]
+        B --> R[Rate Limiter slowapi]
+    end
+
+    subgraph AUTH["Auth & RBAC"]
+        direction TB
+        J[JWT Bearer Decode] --> RG[Role Guard
+Admin · HOD · Staff · Student]
+    end
+
+    subgraph APP["Application Layer"]
+        direction TB
+        E[Endpoint Handler] --> DB[(PostgreSQL
+async session)]
+        DB --> P[Pydantic
+Response Model]
+    end
+
+    C --> MW --> AUTH --> APP
+    APP --> RESP([JSON Response
++ X-Request-ID header])
 ```
 
 ---
 
 ## 🗄️ Data Model
 
+### Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    users {
+        uuid id PK
+        string identity_provider
+        string email UK
+        string hashed_password
+        bool is_active
+    }
+    user_roles {
+        uuid id PK
+        uuid user_id FK
+        enum role
+        uuid granted_by FK
+        datetime revoked_at
+    }
+    departments {
+        uuid id PK
+        string code UK
+        string name
+        bool is_active
+    }
+    students {
+        uuid id PK
+        uuid user_id FK
+        string register_number
+        string full_name
+        string institutional_email UK
+        int academic_year
+        string section
+        uuid department_id FK
+        bool is_active
+    }
+    mentor_assignments {
+        uuid id PK
+        uuid student_id FK
+        uuid mentor_user_id FK
+        uuid assigned_by FK
+        bool is_active
+        text notes
+    }
+    platforms {
+        uuid id PK
+        string slug UK
+        string display_name
+        bool enabled
+        jsonb supported_capabilities
+        string website_url
+    }
+    platform_accounts {
+        uuid id PK
+        uuid student_id FK
+        uuid platform_id FK
+        string external_username
+        enum verification_status
+        enum sync_status
+        datetime last_successful_sync_at
+    }
+    sync_jobs {
+        uuid id PK
+        uuid platform_account_id FK
+        string status
+        datetime started_at
+        datetime completed_at
+        text error_detail
+    }
+    evidence_submissions {
+        uuid id PK
+        uuid student_id FK
+        uuid platform_id FK
+        enum evidence_type
+        string object_storage_key
+        string original_filename
+        int file_size_bytes
+        enum submission_status
+    }
+    verification_reviews {
+        uuid id PK
+        uuid evidence_submission_id FK
+        uuid reviewer_user_id FK
+        enum decision
+        text reason
+    }
+    certificates {
+        uuid id PK
+        uuid student_id FK
+        uuid platform_id FK
+        enum verification_status
+    }
+    audit_logs {
+        uuid id PK
+        uuid actor_user_id FK
+        string action
+        string entity_type
+        string entity_id
+        jsonb permitted_context
+    }
+    notifications {
+        uuid id PK
+        uuid recipient_user_id FK
+        enum notification_type
+        bool is_read
+    }
+
+    users ||--o{ user_roles : "has roles"
+    users ||--o{ mentor_assignments : "mentors"
+    users ||--o{ audit_logs : "actor"
+    users ||--o{ notifications : "receives"
+    departments ||--o{ students : "contains"
+    students ||--o{ mentor_assignments : "assigned to"
+    students ||--o{ platform_accounts : "linked to"
+    students ||--o{ evidence_submissions : "submits"
+    students ||--o{ certificates : "earns"
+    platforms ||--o{ platform_accounts : "used by"
+    platforms ||--o{ certificates : "issues"
+    platform_accounts ||--o{ sync_jobs : "synced via"
+    evidence_submissions ||--o{ verification_reviews : "reviewed by"
 ```
-users
-  └── user_roles          (ADMIN | HOD | STAFF | STUDENT)
 
-departments
-  └── students
-        ├── mentor_assignments  ─────────────────→ users (mentor)
-        ├── platform_accounts   ─→ platforms
-        │     └── sync_jobs
-        ├── progress_snapshots
-        ├── learning_activities
-        ├── certificates        ─→ platforms
-        └── evidence_submissions
-              └── verification_reviews ───────────→ users (reviewer)
+### Core Entities at a Glance
 
-users ── audit_logs   (immutable action trail)
-users ── notifications
-```
-
-### Core Entities
-
-| Model | Purpose | Key Fields |
-|---|---|---|
-| `User` | System users (all roles) | `email`, `identity_provider`, `hashed_password`, `is_active` |
-| `UserRole_` | Role assignments + audit | `role`, `granted_by`, `revoked_at` |
-| `Department` | Academic departments | `code`, `name`, `is_active` |
-| `Student` | Student records | `register_number`, `full_name`, `institutional_email`, `academic_year`, `section` |
-| `MentorAssignment` | Staff–student mentoring | `mentor_user_id`, `assigned_by`, `is_active`, `notes` |
-| `Platform` | Cyber learning platforms | `slug`, `display_name`, `supported_capabilities` (JSONB), `enabled` |
-| `PlatformAccount` | Student ↔ Platform link | `verification_status`, `sync_status`, `last_successful_sync_at` |
-| `EvidenceSubmission` | File evidence uploads | `evidence_type`, `object_storage_key`, `submission_status` |
-| `VerificationReview` | Staff review decisions | `decision` (APPROVED / REJECTED / NEEDS_REVISION), `reason` |
-| `SyncJob` | Platform sync tracking | `status`, `started_at`, `completed_at`, `error_detail` |
-| `AuditLog` | Immutable action trail | `actor_user_id`, `action`, `entity_type`, `entity_id` |
+| Model | Key Fields |
+|---|---|
+| `User` | `email`, `identity_provider`, `hashed_password`, `is_active` |
+| `UserRole_` | `role` (ADMIN/HOD/STAFF/STUDENT), `granted_by`, `revoked_at` |
+| `Department` | `code` (CSE-CS), `name`, `is_active` |
+| `Student` | `register_number`, `full_name`, `institutional_email`, `academic_year`, `section` |
+| `MentorAssignment` | `mentor_user_id`, `assigned_by`, `is_active`, `notes` |
+| `Platform` | `slug`, `display_name`, `supported_capabilities` (JSONB), `enabled` |
+| `PlatformAccount` | `verification_status`, `sync_status`, `last_successful_sync_at` |
+| `SyncJob` | `status`, `started_at`, `completed_at`, `error_detail` |
+| `EvidenceSubmission` | `evidence_type`, `object_storage_key`, `submission_status` |
+| `VerificationReview` | `decision` (APPROVED/REJECTED/NEEDS_REVISION), `reason` |
+| `AuditLog` | `actor_user_id`, `action`, `entity_type`, `entity_id` |
 
 ---
 
@@ -153,33 +285,42 @@ users ── notifications
 
 ### Role Hierarchy
 
-```
-  ┌────────────────────────────────────────────────────────┐
-  │  ADMIN     Full system access · user management         │
-  │    HOD     Department-wide · mentor assignment          │
-  │    STAFF   Only assigned students (SQL-enforced IDOR)   │
-  │    STUDENT Own profile + own submissions only           │
-  └────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["🔴 ADMIN
+Full system access · User management"]
+    B["🟠 HOD
+Department-wide · Mentor assignment · Import"]
+    C["🟡 STAFF
+Only assigned students · Evidence review · Analytics"]
+    D["🟢 STUDENT
+Own profile · Own submissions · Own platform links"]
+
+    A --> B --> C --> D
 ```
 
-| Dependency Guard | Permitted Roles | Applied To |
+### RBAC Dependency Guards
+
+| Guard | Permitted Roles | Applied On |
 |---|---|---|
 | `CurrentUser` | Any authenticated user | All protected endpoints |
-| `RequireAdminOrHOD` | ADMIN, HOD | Student patch · Bulk import |
+| `RequireAdminOrHOD` | ADMIN, HOD | Student PATCH · Bulk Import · Platform unlink |
 | `RequireStaffOrAbove` | ADMIN, HOD, STAFF | Analytics · Evidence review |
-| `RequireHOD` | HOD only | HOD-exclusive actions |
+| `RequireHOD` | HOD only | HOD-exclusive administrative actions |
 
-### Security Hardening Checklist
+### Security Hardening
 
-- ✅ **JWT HS256** — Short-lived access tokens with `use` claim validation
-- ✅ **IDOR Prevention** — Staff/Student rows filtered at SQL `WHERE` level, not post-fetch
-- ✅ **Rate Limiting** — `slowapi` per-IP throttling on all routes
-- ✅ **Zero Stack Trace Leakage** — Global handler returns generic `500`, never internals
-- ✅ **Strict CORS** — Whitelisted origins only, per-environment configurable
-- ✅ **Secure File Uploads** — Extension allowlist · size cap · UUID-renamed keys (no path traversal)
-- ✅ **Production Auth Guard** — Local dev login blocked when `DEV_AUTH_ENABLED=false`
-- ✅ **Immutable Audit Log** — Every review, import, and mutation writes to `audit_logs`
-- ✅ **Request ID Tracing** — `X-Request-ID` propagated on every response
+| Control | Implementation |
+|---|---|
+| ✅ JWT HS256 | Short-lived access tokens with `use` claim; `python-jose` |
+| ✅ IDOR Prevention | Staff/Student rows filtered at SQL `WHERE` level — never post-fetch |
+| ✅ Rate Limiting | `slowapi` per-IP throttling on every route |
+| ✅ Zero Leakage | Global `@exception_handler` returns generic `500` — no stack traces |
+| ✅ Strict CORS | Allowlist-only origins; per-environment configurable |
+| ✅ Secure Uploads | Extension allowlist (`.pdf .png .jpg .jpeg`) · size cap · UUID storage keys |
+| ✅ Production Guard | `DEV_AUTH_ENABLED=false` disables local login entirely |
+| ✅ Audit Trail | Every review, import, and mutation writes to `audit_logs` |
+| ✅ Request Tracing | `X-Request-ID` injected on every response for distributed tracing |
 
 ---
 
@@ -187,50 +328,57 @@ users ── notifications
 
 ### Prerequisites
 
-| Tool | Min Version |
-|---|---|
-| Python | 3.11+ |
-| PostgreSQL | 14+ |
-| Node.js | 18+ |
+| Tool | Version | Link |
+|---|---|---|
+| Python | 3.11+ | [python.org](https://python.org) |
+| PostgreSQL | 14+ | [postgresql.org](https://postgresql.org) |
+| Node.js | 18+ | [nodejs.org](https://nodejs.org) |
 
-### 1 · Clone
+### Step 1 — Clone
 
 ```bash
 git clone https://github.com/nanthishvaran17/cybertrack-nexus.git
 cd cybertrack-nexus
 ```
 
-### 2 · Backend
+### Step 2 — Backend
 
 ```bash
 cd backend
 
-# Create & activate virtual environment
+# Create and activate virtual environment
 python -m venv .venv
-.venv\Scripts\activate          # Windows
-# source .venv/bin/activate      # Linux / macOS
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate    # Linux / macOS
 
 # Install all dependencies
 pip install -e ".[dev]"
 
 # Configure environment
 cp .env.example .env
-# Edit .env — set DATABASE_URL, SECRET_KEY
+# ✏️  Edit .env — fill in DATABASE_URL and SECRET_KEY
 
-# Apply database migrations
+# Run database migrations
 alembic upgrade head
 
-# Launch API server (hot-reload)
+# Seed initial data (department + HOD user + 4 platforms)
+python -m app.db.seed
+
+# Launch API (hot-reload)
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-| URL | Purpose |
+| URL | Description |
 |---|---|
-| `http://127.0.0.1:8000/health/live` | Liveness check |
-| `http://127.0.0.1:8000/api/docs` | Swagger UI (dev only) |
-| `http://127.0.0.1:8000/api/redoc` | ReDoc (dev only) |
+| `http://127.0.0.1:8000/health/live` | ✅ Liveness probe |
+| `http://127.0.0.1:8000/health/ready` | ✅ Readiness + DB check |
+| `http://127.0.0.1:8000/api/docs` | 📖 Swagger UI (dev only) |
+| `http://127.0.0.1:8000/api/redoc` | 📖 ReDoc (dev only) |
 
-### 3 · Frontend
+> **Default HOD login after seed:**  
+> Email: `hod@nandhaengg.edu.in` · Password: `ChangeMe@123` *(change immediately)*
+
+### Step 3 — Frontend
 
 ```bash
 cd frontend
@@ -239,22 +387,46 @@ npm run dev
 # → http://localhost:5173
 ```
 
+### Frontend Pages
+
+| Route | Page | Access |
+|---|---|---|
+| `/login` | Login Form | 🌐 Public |
+| `/` | Overview Dashboard | 🔒 All roles |
+| `/students` | Student Registry + Import | 🔒 All roles |
+| `/platforms` | Platform Account Manager | 🔒 All roles |
+| `/evidence` | Evidence Upload + Review | 🔒 All roles |
+| `/analytics` | Analytics Dashboard | 🛡️ Staff+ |
+| `/mentor` | Mentor Workspace | 🛡️ Staff+ |
+| `/certifications` | Certificate Tracker | 🔒 All roles |
+| `/integrations` | Platform Sync Health | 🛡️ Admin/HOD |
+| `/audit` | Audit Log Viewer | 🛡️ HOD only |
+| `/settings` | System Settings | 🛡️ Admin/HOD |
+
 ---
 
 ## 📡 API Reference
 
-**Base URL:** `/api/v1`
+**Base URL:** `http://localhost:8000/api/v1`
 
 <details>
 <summary><b>🔑 Authentication — <code>/auth</code></b></summary>
 <br/>
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `POST` | `/auth/login` | 🌐 Public | Dev-mode local login → returns JWT bearer token |
-| `POST` | `/auth/logout` | 🔒 Bearer | Logout — client discards token; audit recorded |
-| `GET` | `/auth/me` | 🔒 Bearer | Current user profile + active roles |
+|---|---|:---:|---|
+| `POST` | `/auth/login` | 🌐 Public | Email + password → JWT bearer token |
+| `POST` | `/auth/logout` | 🔒 Bearer | Logout (stateless; client discards token) |
+| `GET` | `/auth/me` | 🔒 Bearer | Authenticated user profile + active roles |
 
+**Login example:**
+```json
+POST /api/v1/auth/login
+{
+  "email": "hod@nandhaengg.edu.in",
+  "password": "ChangeMe@123"
+}
+```
 </details>
 
 <details>
@@ -262,13 +434,15 @@ npm run dev
 <br/>
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/students` | 🔒 Bearer | Paginated list · full-text search · year/section filters |
-| `GET` | `/students/{id}` | 🔒 Bearer | Individual student (IDOR-guarded per role) |
-| `PATCH` | `/students/{id}` | 🛡️ Admin/HOD | Update name, year, section, active flag |
-| `POST` | `/students/import/preview` | 🛡️ Admin/HOD | Dry-run: validate rows, surface all conflicts |
-| `POST` | `/students/import/commit` | 🛡️ Admin/HOD | Transactional bulk insert — all-or-nothing |
+|---|---|:---:|---|
+| `GET` | `/students` | 🔒 Bearer | Paginated list · full-text search · year/section/active filters |
+| `GET` | `/students/{id}` | 🔒 Bearer | Get student by ID (IDOR-guarded per role) |
+| `PATCH` | `/students/{id}` | 🛡️ Admin/HOD | Update name, year, section, active status |
+| `POST` | `/students/import/preview` | 🛡️ Admin/HOD | Dry-run CSV rows — surface all conflicts |
+| `POST` | `/students/import/commit` | 🛡️ Admin/HOD | Transactional bulk insert (all-or-nothing) |
 
+**Query params for `GET /students`:**  
+`page` · `page_size` · `search` · `academic_year` · `section` · `is_active`
 </details>
 
 <details>
@@ -276,13 +450,21 @@ npm run dev
 <br/>
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/platforms` | 🔒 Bearer | List all enabled cyber learning platforms |
+|---|---|:---:|---|
+| `GET` | `/platforms` | 🔒 Bearer | List all enabled platforms with capabilities |
 | `GET` | `/platforms/{id}/capabilities` | 🔒 Bearer | JSONB capability manifest for a platform |
 | `POST` | `/platform-accounts` | 🔒 Bearer | Link a student to a platform account |
-| `GET` | `/platform-accounts` | 🔒 Bearer | List linked accounts (filterable by student) |
+| `GET` | `/platform-accounts` | 🔒 Bearer | List linked accounts (filterable by `student_id`) |
 | `DELETE` | `/platform-accounts/{id}` | 🛡️ Admin/HOD | Soft-delete (deactivate) a platform link |
 
+**Seeded Platforms:**
+
+| Platform | Slug | API Sync | Manual Upload |
+|---|---|:---:|:---:|
+| Cisco Networking Academy | `cisco_netacad` | ❌ | ✅ |
+| TryHackMe | `tryhackme` | ✅ | ✅ |
+| Hack The Box | `hackthebox` | ❌ | ✅ |
+| PortSwigger Web Security Academy | `portswigger` | ❌ | ✅ |
 </details>
 
 <details>
@@ -290,11 +472,13 @@ npm run dev
 <br/>
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `POST` | `/evidence` | 🔒 Bearer | Upload file evidence (PDF · PNG · JPG, size-capped) |
-| `GET` | `/evidence` | 🔒 Bearer | List submissions (filter by student / status) |
-| `POST` | `/evidence/{id}/review` | 🛡️ Staff+ | Approve · Reject · Request revision + writes audit log |
+|---|---|:---:|---|
+| `POST` | `/evidence` | 🔒 Bearer | Upload evidence file (PDF · PNG · JPG · JPEG, max `MAX_UPLOAD_SIZE_MB`) |
+| `GET` | `/evidence` | 🔒 Bearer | List submissions (filter by `student_id`, `submission_status`) |
+| `POST` | `/evidence/{id}/review` | 🛡️ Staff+ | Review decision + reason; writes audit log entry |
 
+**Evidence types:** `certificate` · `lab_completion` · `course_completion` · `achievement` · `other`  
+**Review decisions:** `approved` → `VERIFIED` · `rejected` → `REJECTED` · `needs_revision`
 </details>
 
 <details>
@@ -302,84 +486,101 @@ npm run dev
 <br/>
 
 | Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/analytics/overview` | 🛡️ Staff+ | Active students · certs · sync success rate · platform adoption |
+|---|---|:---:|---|
+| `GET` | `/analytics/overview` | 🛡️ Staff+ | Active students · verified certs · sync success rate · platform adoption |
 | `GET` | `/analytics/platforms` | 🛡️ Staff+ | Per-platform linked account counts |
 
+**Overview response fields:**  
+`total_active_students` · `students_with_linked_platforms` · `verified_certificates` · `pending_evidence` · `sync_success_rate` · `platform_adoption[]`
 </details>
 
 <details>
 <summary><b>🏥 Health Checks</b></summary>
 <br/>
 
-| Method | Endpoint | Description |
+| Method | Endpoint | Response |
 |---|---|---|
-| `GET` | `/health/live` | Liveness — `200 OK` if server is running |
-| `GET` | `/health/ready` | Readiness — checks live DB connectivity |
-
+| `GET` | `/health/live` | `{"status":"ok","version":"0.1.0"}` |
+| `GET` | `/health/ready` | `{"status":"ready","db":"ok"}` or `503` if DB unavailable |
 </details>
 
 ---
 
-## ⚙️ Environment Reference
+## ⚙️ Environment Configuration
 
 ```env
-# ── Application ────────────────────────────────────────
+# ── Application ────────────────────────────────────────────────────
 APP_NAME=CyberTrack Nexus
 APP_VERSION=0.1.0
-ENVIRONMENT=development              # development | staging | production
+ENVIRONMENT=development           # development | staging | production
 
-# ── Database ───────────────────────────────────────────
+# ── Database ───────────────────────────────────────────────────────
 DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/cybertrack
 
-# ── Security ───────────────────────────────────────────
-SECRET_KEY=change-me-to-32-random-chars
+# ── Security ───────────────────────────────────────────────────────
+SECRET_KEY=change-me-to-32-random-chars   # python -c "import secrets; print(secrets.token_hex(32))"
 ACCESS_TOKEN_EXPIRE_MINUTES=60
-DEV_AUTH_ENABLED=true                # ⚠️  Always false in production
+DEV_AUTH_ENABLED=true             # ⚠️  MUST be false in production
 
-# ── CORS ───────────────────────────────────────────────
+# ── CORS ───────────────────────────────────────────────────────────
 ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 
-# ── API ────────────────────────────────────────────────
+# ── API ────────────────────────────────────────────────────────────
 API_V1_PREFIX=/api/v1
 
-# ── Storage ────────────────────────────────────────────
-STORAGE_BACKEND=local                # local | s3
+# ── Storage ────────────────────────────────────────────────────────
+STORAGE_BACKEND=local             # local | s3
 LOCAL_STORAGE_PATH=./uploads
 MAX_UPLOAD_SIZE_MB=10
+
+# ── Seed (optional) ────────────────────────────────────────────────
+SEED_HOD_EMAIL=hod@nandhaengg.edu.in
+SEED_HOD_PASSWORD=ChangeMe@123
 ```
+
+> Generate a secure key: `python -c "import secrets; print(secrets.token_hex(32))"`
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Why |
+### Backend
+
+| Layer | Technology | Version | Purpose |
+|---|---|---|---|
+| API Framework | **FastAPI** | 0.100+ | Async REST · auto OpenAPI docs |
+| ORM | **SQLAlchemy** | 2.x async | Type-safe queries · composable filters |
+| Database | **PostgreSQL + asyncpg** | 16+ | JSONB · constraints · UUID primary keys |
+| Migrations | **Alembic** | Latest | Version-controlled schema evolution |
+| Auth | **python-jose + passlib** | Latest | JWT HS256 · bcrypt password hashing |
+| Validation | **Pydantic** | v2 | Request/response schema enforcement |
+| Rate Limiting | **slowapi** | Latest | Per-IP request throttling |
+| Logging | **structlog** | Latest | Structured JSON log events |
+| ASGI Server | **Uvicorn** | Latest | Production async server |
+
+### Frontend
+
+| Layer | Technology | Purpose |
 |---|---|---|
-| **API Framework** | FastAPI (async) | Auto OpenAPI · async-native · type-safe |
-| **ORM** | SQLAlchemy 2.x async | Fully typed · composable queries |
-| **Database** | PostgreSQL + asyncpg | JSONB · constraints · foreign keys |
-| **Migrations** | Alembic | Version-controlled schema evolution |
-| **Auth** | python-jose + passlib | JWT HS256 · bcrypt hashing |
-| **Validation** | Pydantic v2 | Request/response enforcement |
-| **Rate Limiting** | slowapi | Per-IP request throttling |
-| **Logging** | structlog | Structured JSON log events |
-| **ASGI Server** | Uvicorn | Production-grade async server |
-| **Frontend** | React + Vite + TypeScript | SPA with type safety and fast HMR |
+| Framework | **React 18** | Component UI with hooks |
+| Build Tool | **Vite 5** | Fast dev server + HMR |
+| Language | **TypeScript** | Type-safe client code |
+| Routing | **React Router v6** | Client-side navigation |
+| Data Fetching | **TanStack Query** | Server state management + caching |
+| Styling | **Tailwind CSS** | Utility-first CSS with dark mode |
 
 ---
 
 ## 🌐 Supported Cyber Platforms
 
-The platform registry is fully extensible via the `supported_capabilities` JSONB field:
+| Platform | Slug | API Sync | Manual Upload | Notes |
+|---|---|:---:|:---:|---|
+| 🔵 **Cisco Networking Academy** | `cisco_netacad` | ❌ | ✅ | No public API — manual cert upload |
+| 🔴 **TryHackMe** | `tryhackme` | ✅ | ✅ | Public API: profile, room completions, XP, points |
+| ⬛ **Hack The Box** | `hackthebox` | ❌ | ✅ | Org-level API required; manual until confirmed |
+| 🟠 **PortSwigger Web Security** | `portswigger` | ❌ | ✅ | No public API — lab completion evidence upload |
 
-| Platform | Focus Area | Tracked Metrics |
-|---|---|---|
-| 🔴 TryHackMe | Beginner–Intermediate labs | Room completions · XP · Daily streak |
-| ⬛ Hack The Box | Advanced penetration testing | Machine solves · Pro rank · Blood |
-| 🟡 LeetCode | Competitive programming | Rating · Problems solved · Contest rank |
-| 🟢 Coursera / edX | MOOCs & specialisations | Course completions · Certificates |
-| 🔵 Cisco NetAcad | Network fundamentals | Module progress · Badge earn |
-| 🟠 CompTIA / EC-Council | Industry certifications | Certificate upload · Verification status |
+> More platforms can be added via the platform registry without code changes.
 
 ---
 
@@ -388,41 +589,50 @@ The platform registry is fully extensible via the `supported_capabilities` JSONB
 We welcome contributions from faculty, students, and the open-source community!
 
 ```bash
-# Fork & clone
+# 1. Fork and clone
 git clone https://github.com/<your-username>/cybertrack-nexus.git
 
-# Create a feature branch
+# 2. Create a feature branch
 git checkout -b feature/your-feature-name
 
-# Commit using conventional commits
-git commit -m "feat: describe your change"
+# 3. Make your changes and write tests
 
-# Push and open a Pull Request
+# 4. Commit using conventional commits
+git commit -m "feat: describe your change clearly"
+
+# 5. Push and open a Pull Request
 git push origin feature/your-feature-name
 ```
 
 ### Commit Convention
 
-| Prefix | When to use |
+| Prefix | Usage |
 |---|---|
-| `feat:` | A new feature |
-| `fix:` | A bug fix |
-| `docs:` | Documentation only |
-| `refactor:` | Code change without feature/fix |
-| `test:` | Adding or updating tests |
+| `feat:` | New feature |
+| `fix:` | Bug fix |
+| `docs:` | Documentation update |
+| `refactor:` | Code restructure (no feature/fix) |
+| `test:` | New or updated tests |
 | `chore:` | Build tooling / dependencies |
 | `security:` | Security fix or hardening |
 
+### Good First Issues
+
+- Add pagination to `/evidence` endpoint
+- Implement token denylist for logout (Redis or DB)
+- Write `pytest` test coverage for auth endpoints
+- Add TryHackMe API sync integration
+- Build mentor assignment endpoint
+
 ---
 
-## 🏫 Institution
+## 🏫 About
 
 <div align="center">
 
 **Nandha Engineering College**  
 Department of Computer Science & Engineering (Cyber Security)  
 Erode, Tamil Nadu, India  
-
 *Affiliated to Anna University · Approved by AICTE*
 
 </div>
@@ -431,21 +641,22 @@ Erode, Tamil Nadu, India
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+Licensed under the **MIT License** — see [LICENSE](LICENSE) for full text.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ by the CSE team at Nandha Engineering College**
+**Built with ❤️ for cybersecurity education**
 
-*Empowering every cybersecurity student to track, prove, and grow their skills.*
+*Empowering every student at Nandha Engineering College to track, prove, and grow their skills.*
 
 <br/>
 
-[![Stars](https://img.shields.io/github/stars/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/stargazers)
-[![Forks](https://img.shields.io/github/forks/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/fork)
+[![GitHub Stars](https://img.shields.io/github/stars/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/fork)
+[![GitHub Issues](https://img.shields.io/github/issues/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/issues)
 
-⭐ **Star this repo** if CyberTrack Nexus helps your institution!
+⭐ **Star this repo** if CyberTrack Nexus inspires your institution!
 
 </div>
