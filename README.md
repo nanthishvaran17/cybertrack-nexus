@@ -1,379 +1,451 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/CyberTrack_Nexus-v0.1.0-6c63ff?style=for-the-badge&logo=shield&logoColor=white" alt="version"/>
-<img src="https://img.shields.io/badge/FastAPI-0.100+-00c896?style=for-the-badge&logo=fastapi&logoColor=white" alt="fastapi"/>
-<img src="https://img.shields.io/badge/PostgreSQL-16+-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgres"/>
-<img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="python"/>
-<img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="license"/>
-
-<br/><br/>
-
-# ??? CyberTrack Nexus
-
-### **Cybersecurity Education Intelligence Platform**
-**Nandha Engineering College � Department of Computer Science & Engineering**
-
-*A production-grade, role-aware platform that tracks every student's cybersecurity learning journey � from platform accounts and certificates to mentor reviews and real-time analytics.*
+![CyberTrack Nexus](docs/assets/banner.jpg)
 
 <br/>
 
-[?? API Docs](#-api-reference) � [?? Quick Start](#-quick-start) � [??? Architecture](#-architecture) � [?? Security](#-security-model) � [?? Contributing](#-contributing)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Async-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
+[![React](https://img.shields.io/badge/React-Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://vitejs.dev)
+[![License](https://img.shields.io/badge/License-MIT-F7DF1E?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-00E676?style=for-the-badge)]()
+
+<br/>
+
+# 🛡️ CyberTrack Nexus
+
+### Cybersecurity Education Intelligence Platform
+**Nandha Engineering College — Dept. of Computer Science & Engineering**
+
+*Production-grade · Role-aware · Real-time*
+
+*Tracks every student's cybersecurity journey — platform accounts, certifications, mentor reviews, and live analytics — behind a hardened JWT-authenticated API.*
+
+<br/>
+
+[![API Docs](https://img.shields.io/badge/📖_API_Reference-6c63ff?style=flat-square)](#-api-reference)
+[![Quick Start](https://img.shields.io/badge/🚀_Quick_Start-009688?style=flat-square)](#-quick-start)
+[![Architecture](https://img.shields.io/badge/🏗️_Architecture-ff6b6b?style=flat-square)](#️-architecture)
+[![Security](https://img.shields.io/badge/🔐_Security-f7931e?style=flat-square)](#-security-model)
 
 </div>
 
 ---
 
-## ? Overview
+## ✨ What is CyberTrack Nexus?
 
-**CyberTrack Nexus** is an institutional-grade intelligence platform built for cybersecurity education departments. It aggregates student learning activity from external platforms (TryHackMe, Hack The Box, LeetCode, etc.), manages evidence submissions, orchestrates mentor workflows, and delivers real-time analytics � all behind a hardened, JWT-authenticated REST API.
+**CyberTrack Nexus** is an institutional-grade intelligence platform purpose-built for cybersecurity education departments. It aggregates student learning activity from external platforms *(TryHackMe, Hack The Box, LeetCode, Cisco NetAcad, etc.)*, manages evidence submissions, orchestrates mentor–student workflows, and delivers real-time analytics — all behind a hardened, JWT-authenticated REST API with fine-grained RBAC.
 
-> Built for **Nandha Engineering College CSE** � designed to scale to any engineering institution.
+> 🏫 Built for **Nandha Engineering College CSE (Cyber Security)** — architected to scale to any engineering institution.
 
-### ?? What It Does
+<br/>
 
-| Feature | Description |
-|---|---|
-| ?? **Student Registry** | Bulk-import, paginate, search and manage the full student cohort |
-| ?? **Platform Linking** | Connect students to cybersecurity platforms with verification workflows |
-| ?? **Evidence Management** | Students upload certificates/lab completions; staff review and approve |
-| ????? **Mentor Assignment** | HODs assign mentors; staff see only their assigned students (IDOR-safe) |
-| ?? **Analytics Dashboard** | Live metrics: platform adoption, sync health, certificate stats |
-| ?? **RBAC** | Four-tier role system: Admin ? HOD ? Staff ? Student |
-| ?? **Audit Trail** | Every sensitive action is logged to an immutable audit table |
-| ?? **Notifications** | In-app notifications for reviews, sync failures, and interventions |
+## 🎯 Core Features
+
+| | Feature | Description |
+|:---:|---|---|
+| 🎓 | **Student Registry** | Bulk-import CSV, paginate, search, and manage the full student cohort with department isolation |
+| 🔗 | **Platform Linking** | Connect students to cybersecurity platforms with full verification & sync status lifecycle |
+| 📄 | **Evidence Management** | Students upload PDF/PNG certificates; staff review, approve, or request revisions |
+| 🧑‍🏫 | **Mentor Assignment** | HODs assign mentors; staff see *only* their assigned students — IDOR-enforced at SQL level |
+| 📊 | **Live Analytics** | Real-time metrics: platform adoption, sync health, verified certificates, intervention flags |
+| 🔒 | **4-Tier RBAC** | Admin → HOD → Staff → Student — every endpoint independently role-guarded |
+| 🪵 | **Immutable Audit Trail** | Every sensitive mutation logged to `audit_logs` — tamper-evident action history |
+| 🔔 | **Notifications** | In-app alerts for reviews, sync failures, mentor notes, and intervention flags |
+| ⚙️ | **Sync Engine** | Background workers sync platform accounts with health/stale/failed state tracking |
+| 🛡️ | **Security Hardened** | Rate limiting, strict CORS, no stack trace leakage, UUID storage keys |
 
 ---
 
-## ??? Architecture
+## 🏗️ Architecture
 
 ```
 cybertrack-nexus/
-+-- backend/                  # FastAPI async Python API
-�   +-- app/
-�       +-- main.py           # App factory, middleware, router registration
-�       +-- api/v1/endpoints/ # REST endpoint modules
-�       �   +-- auth.py       # Login � Logout � /me
-�       �   +-- students.py   # CRUD + bulk import (preview/commit)
-�       �   +-- platforms.py  # Platform registry + account linking
-�       �   +-- evidence.py   # File upload, review workflow
-�       �   +-- analytics.py  # Overview metrics + platform breakdown
-�       +-- models/
-�       �   +-- models.py     # All SQLAlchemy ORM models (PostgreSQL)
-�       +-- core/
-�       �   +-- config.py     # Pydantic settings (env-driven)
-�       �   +-- dependencies.py # JWT auth + RBAC typed dependencies
-�       +-- db/
-�       �   +-- database.py   # Async SQLAlchemy engine + session
-�       +-- security/
-�       �   +-- jwt.py        # Token creation, verification, password hashing
-�       +-- workers/          # Background sync workers (async tasks)
-�       +-- analytics/        # Analytics computation engines
-�       +-- integrations/     # External platform API adapters
-�       +-- repositories/     # Data access layer
-�       +-- schemas/          # Shared Pydantic schemas
-�       +-- tests/            # Test suite
-+-- frontend/                 # React/Vite SPA (http://localhost:5173)
-+-- docs/                     # Architecture & API documentation
-+-- infra/                    # Infrastructure-as-Code (Docker, K8s, etc.)
-+-- .github/                  # CI/CD workflows
+│
+├── backend/                          # ⚡ FastAPI async Python API
+│   └── app/
+│       ├── main.py                   # App factory · CORS · Rate limiter · Routers
+│       ├── api/v1/endpoints/
+│       │   ├── auth.py               # 🔑 Login · Logout · /me
+│       │   ├── students.py           # 👥 CRUD + bulk import (preview → commit)
+│       │   ├── platforms.py          # 🖥️  Platform registry + account linking
+│       │   ├── evidence.py           # 📄 File upload · Review workflow · Audit
+│       │   └── analytics.py          # 📊 Overview metrics · Platform breakdown
+│       ├── models/models.py          # 🗄️  All SQLAlchemy ORM models (PostgreSQL)
+│       ├── core/
+│       │   ├── config.py             # ⚙️  Pydantic settings (fully env-driven)
+│       │   └── dependencies.py       # 🔐 JWT auth + typed RBAC guards
+│       ├── db/database.py            # 🐘 Async SQLAlchemy engine + session factory
+│       ├── security/jwt.py           # 🔑 Token creation · verification · bcrypt
+│       ├── workers/                  # ⚙️  Background sync workers
+│       ├── integrations/             # 🌐 External platform API adapters
+│       ├── analytics/                # 📈 Computation engines
+│       ├── repositories/             # 🗃️  Data access layer
+│       └── tests/                    # 🧪 Test suite
+│
+├── frontend/                         # ⚛️  React + Vite + TypeScript SPA
+├── docs/                             # 📖 Architecture & API docs
+├── infra/                            # 🐳 Docker / K8s / IaC
+└── .github/                          # 🤖 CI/CD GitHub Actions
 ```
 
-### ?? Request Lifecycle
+### 🔄 Request Lifecycle
 
 ```
-Client ? [CORS Middleware] ? [Request-ID Middleware] ? [Rate Limiter]
-       ? [JWT Auth Dependency] ? [RBAC Role Guard] ? [Endpoint Handler]
-       ? [AsyncSession (PostgreSQL)] ? [JSON Response]
+Client
+  │
+  ▼
+[CORS Middleware] → [Request-ID Middleware] → [Rate Limiter (slowapi)]
+  │
+  ▼
+[JWT Bearer Auth] → [RBAC Role Guard]
+  │
+  ▼
+[Endpoint Handler] → [Async PostgreSQL Session]
+  │
+  ▼
+[Pydantic Response Model] → JSON Response (with X-Request-ID header)
 ```
 
 ---
 
-## ??? Data Model
+## 🗄️ Data Model
 
 ```
 users
-  +-- user_roles (ADMIN | HOD | STAFF | STUDENT)
+  └── user_roles          (ADMIN | HOD | STAFF | STUDENT)
 
 departments
-  +-- students
-        +-- mentor_assignments ? users (mentor)
-        +-- platform_accounts  ? platforms
-        �     +-- sync_jobs
-        +-- progress_snapshots
-        +-- learning_activities
-        +-- certificates       ? platforms
-        +-- evidence_submissions
-              +-- verification_reviews ? users (reviewer)
+  └── students
+        ├── mentor_assignments  ─────────────────→ users (mentor)
+        ├── platform_accounts   ─→ platforms
+        │     └── sync_jobs
+        ├── progress_snapshots
+        ├── learning_activities
+        ├── certificates        ─→ platforms
+        └── evidence_submissions
+              └── verification_reviews ───────────→ users (reviewer)
 
-users -- audit_logs (immutable action trail)
-users -- notifications
+users ── audit_logs   (immutable action trail)
+users ── notifications
 ```
 
 ### Core Entities
 
-| Model | Key Fields |
-|---|---|
-| `User` | `id`, `email`, `identity_provider`, `hashed_password`, `is_active` |
-| `UserRole_` | `user_id`, `role`, `granted_by`, `revoked_at` |
-| `Department` | `code`, `name`, `is_active` |
-| `Student` | `register_number`, `full_name`, `institutional_email`, `academic_year`, `section` |
-| `MentorAssignment` | `student_id`, `mentor_user_id`, `assigned_by`, `is_active` |
-| `Platform` | `slug`, `display_name`, `supported_capabilities` (JSONB), `enabled` |
-| `PlatformAccount` | `student_id`, `platform_id`, `verification_status`, `sync_status` |
-| `EvidenceSubmission` | `evidence_type`, `object_storage_key`, `submission_status` |
-| `VerificationReview` | `decision` (APPROVED/REJECTED/NEEDS_REVISION), `reason` |
-| `AuditLog` | `actor_user_id`, `action`, `entity_type`, `entity_id` |
+| Model | Purpose | Key Fields |
+|---|---|---|
+| `User` | System users (all roles) | `email`, `identity_provider`, `hashed_password`, `is_active` |
+| `UserRole_` | Role assignments + audit | `role`, `granted_by`, `revoked_at` |
+| `Department` | Academic departments | `code`, `name`, `is_active` |
+| `Student` | Student records | `register_number`, `full_name`, `institutional_email`, `academic_year`, `section` |
+| `MentorAssignment` | Staff–student mentoring | `mentor_user_id`, `assigned_by`, `is_active`, `notes` |
+| `Platform` | Cyber learning platforms | `slug`, `display_name`, `supported_capabilities` (JSONB), `enabled` |
+| `PlatformAccount` | Student ↔ Platform link | `verification_status`, `sync_status`, `last_successful_sync_at` |
+| `EvidenceSubmission` | File evidence uploads | `evidence_type`, `object_storage_key`, `submission_status` |
+| `VerificationReview` | Staff review decisions | `decision` (APPROVED / REJECTED / NEEDS_REVISION), `reason` |
+| `SyncJob` | Platform sync tracking | `status`, `started_at`, `completed_at`, `error_detail` |
+| `AuditLog` | Immutable action trail | `actor_user_id`, `action`, `entity_type`, `entity_id` |
 
 ---
 
-## ?? Security Model
+## 🔐 Security Model
 
-### Role-Based Access Control (RBAC)
+### Role Hierarchy
 
 ```
-ADMIN  ---- Full system access, user management
-  HOD  ---- Department-wide visibility, mentor assignment
-  STAFF --- Only their assigned students (IDOR-enforced at query level)
-  STUDENT - Only their own profile, their own evidence submissions
+  ┌────────────────────────────────────────────────────────┐
+  │  ADMIN     Full system access · user management         │
+  │    HOD     Department-wide · mentor assignment          │
+  │    STAFF   Only assigned students (SQL-enforced IDOR)   │
+  │    STUDENT Own profile + own submissions only           │
+  └────────────────────────────────────────────────────────┘
 ```
 
-| Guard | Roles Allowed | Used In |
+| Dependency Guard | Permitted Roles | Applied To |
 |---|---|---|
 | `CurrentUser` | Any authenticated user | All protected endpoints |
-| `RequireAdminOrHOD` | ADMIN, HOD | Student patch, bulk import |
-| `RequireStaffOrAbove` | ADMIN, HOD, STAFF | Analytics, evidence review |
-| `RequireHOD` | HOD only | HOD-specific actions |
+| `RequireAdminOrHOD` | ADMIN, HOD | Student patch · Bulk import |
+| `RequireStaffOrAbove` | ADMIN, HOD, STAFF | Analytics · Evidence review |
+| `RequireHOD` | HOD only | HOD-exclusive actions |
 
-### Security Hardening
+### Security Hardening Checklist
 
-- ? **JWT Bearer tokens** � HS256, short-lived access tokens with `use` claim validation
-- ? **IDOR prevention** � Staff/Student access filtered at the SQL query level, not just view layer
-- ? **Rate limiting** � `slowapi` per-IP rate limiter on all routes
-- ? **No internal leakage** � Global exception handler returns `500` generics, never stack traces
-- ? **CORS strict** � Only whitelisted origins; configurable per environment
-- ? **File upload safety** � Extension allowlist + size cap + UUID-renamed storage keys (no path traversal)
-- ? **Production auth guard** � Local login disabled when `DEV_AUTH_ENABLED=false`
-- ? **Audit trail** � Every review, import, and sensitive mutation writes to `audit_logs`
+- ✅ **JWT HS256** — Short-lived access tokens with `use` claim validation
+- ✅ **IDOR Prevention** — Staff/Student rows filtered at SQL `WHERE` level, not post-fetch
+- ✅ **Rate Limiting** — `slowapi` per-IP throttling on all routes
+- ✅ **Zero Stack Trace Leakage** — Global handler returns generic `500`, never internals
+- ✅ **Strict CORS** — Whitelisted origins only, per-environment configurable
+- ✅ **Secure File Uploads** — Extension allowlist · size cap · UUID-renamed keys (no path traversal)
+- ✅ **Production Auth Guard** — Local dev login blocked when `DEV_AUTH_ENABLED=false`
+- ✅ **Immutable Audit Log** — Every review, import, and mutation writes to `audit_logs`
+- ✅ **Request ID Tracing** — `X-Request-ID` propagated on every response
 
 ---
 
-## ?? Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-| Tool | Version |
+| Tool | Min Version |
 |---|---|
 | Python | 3.11+ |
 | PostgreSQL | 14+ |
 | Node.js | 18+ |
-| Git | Latest |
 
-### 1. Clone the repository
+### 1 · Clone
 
 ```bash
 git clone https://github.com/nanthishvaran17/cybertrack-nexus.git
 cd cybertrack-nexus
 ```
 
-### 2. Backend setup
+### 2 · Backend
 
 ```bash
 cd backend
 
-# Create virtual environment
+# Create & activate virtual environment
 python -m venv .venv
-.venv\Scripts\activate        # Windows
-# source .venv/bin/activate   # Linux/Mac
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate      # Linux / macOS
 
-# Install dependencies
+# Install all dependencies
 pip install -e ".[dev]"
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your PostgreSQL credentials, SECRET_KEY, etc.
+# Edit .env — set DATABASE_URL, SECRET_KEY
 
-# Run database migrations
+# Apply database migrations
 alembic upgrade head
 
-# Start the API server
+# Launch API server (hot-reload)
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-**API is now live at:** `http://127.0.0.1:8000`  
-**Interactive docs:** `http://127.0.0.1:8000/api/docs`
+| URL | Purpose |
+|---|---|
+| `http://127.0.0.1:8000/health/live` | Liveness check |
+| `http://127.0.0.1:8000/api/docs` | Swagger UI (dev only) |
+| `http://127.0.0.1:8000/api/redoc` | ReDoc (dev only) |
 
-### 3. Frontend setup
+### 3 · Frontend
 
 ```bash
 cd frontend
 npm install
 npm run dev
+# → http://localhost:5173
 ```
-
-**Frontend is now live at:** `http://localhost:5173`
 
 ---
 
-## ?? API Reference
+## 📡 API Reference
 
-### Base URL: `/api/v1`
+**Base URL:** `/api/v1`
 
-#### ?? Authentication � `/auth`
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `POST` | `/auth/login` | Public | Dev-mode login ? JWT token |
-| `POST` | `/auth/logout` | ? Bearer | Logout (client discards token) |
-| `GET` | `/auth/me` | ? Bearer | Current user profile + roles |
-
-#### ?? Students � `/students`
+<details>
+<summary><b>🔑 Authentication — <code>/auth</code></b></summary>
+<br/>
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/students` | ? Bearer | Paginated list with search, year, section filters |
-| `GET` | `/students/{id}` | ? Bearer | Get individual student (IDOR-guarded) |
-| `PATCH` | `/students/{id}` | ?? Admin/HOD | Update student fields |
-| `POST` | `/students/import/preview` | ?? Admin/HOD | Validate bulk rows, return conflicts |
-| `POST` | `/students/import/commit` | ?? Admin/HOD | Transactionally commit validated rows |
+| `POST` | `/auth/login` | 🌐 Public | Dev-mode local login → returns JWT bearer token |
+| `POST` | `/auth/logout` | 🔒 Bearer | Logout — client discards token; audit recorded |
+| `GET` | `/auth/me` | 🔒 Bearer | Current user profile + active roles |
 
-#### ??? Platforms � `/platforms` & `/platform-accounts`
+</details>
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/platforms` | ? Bearer | List all enabled platforms |
-| `GET` | `/platforms/{id}/capabilities` | ? Bearer | Platform capability manifest |
-| `POST` | `/platform-accounts` | ? Bearer | Link student to a platform |
-| `GET` | `/platform-accounts` | ? Bearer | List linked accounts |
-| `DELETE` | `/platform-accounts/{id}` | ?? Admin/HOD | Soft-delete a platform link |
-
-#### ?? Evidence � `/evidence`
+<details>
+<summary><b>👥 Students — <code>/students</code></b></summary>
+<br/>
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/evidence` | ? Bearer | Upload file evidence (PDF/PNG/JPG) |
-| `GET` | `/evidence` | ? Bearer | List submissions |
-| `POST` | `/evidence/{id}/review` | ?? Staff+ | Approve / Reject / Request revision |
+| `GET` | `/students` | 🔒 Bearer | Paginated list · full-text search · year/section filters |
+| `GET` | `/students/{id}` | 🔒 Bearer | Individual student (IDOR-guarded per role) |
+| `PATCH` | `/students/{id}` | 🛡️ Admin/HOD | Update name, year, section, active flag |
+| `POST` | `/students/import/preview` | 🛡️ Admin/HOD | Dry-run: validate rows, surface all conflicts |
+| `POST` | `/students/import/commit` | 🛡️ Admin/HOD | Transactional bulk insert — all-or-nothing |
 
-#### ?? Analytics � `/analytics`
+</details>
+
+<details>
+<summary><b>🖥️ Platforms — <code>/platforms</code> &amp; <code>/platform-accounts</code></b></summary>
+<br/>
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/analytics/overview` | ?? Staff+ | Active students, certificates, sync rate |
-| `GET` | `/analytics/platforms` | ?? Staff+ | Per-platform linked account counts |
+| `GET` | `/platforms` | 🔒 Bearer | List all enabled cyber learning platforms |
+| `GET` | `/platforms/{id}/capabilities` | 🔒 Bearer | JSONB capability manifest for a platform |
+| `POST` | `/platform-accounts` | 🔒 Bearer | Link a student to a platform account |
+| `GET` | `/platform-accounts` | 🔒 Bearer | List linked accounts (filterable by student) |
+| `DELETE` | `/platform-accounts/{id}` | 🛡️ Admin/HOD | Soft-delete (deactivate) a platform link |
 
-#### ?? Health Checks
+</details>
+
+<details>
+<summary><b>📄 Evidence — <code>/evidence</code></b></summary>
+<br/>
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/evidence` | 🔒 Bearer | Upload file evidence (PDF · PNG · JPG, size-capped) |
+| `GET` | `/evidence` | 🔒 Bearer | List submissions (filter by student / status) |
+| `POST` | `/evidence/{id}/review` | 🛡️ Staff+ | Approve · Reject · Request revision + writes audit log |
+
+</details>
+
+<details>
+<summary><b>📊 Analytics — <code>/analytics</code></b></summary>
+<br/>
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/analytics/overview` | 🛡️ Staff+ | Active students · certs · sync success rate · platform adoption |
+| `GET` | `/analytics/platforms` | 🛡️ Staff+ | Per-platform linked account counts |
+
+</details>
+
+<details>
+<summary><b>🏥 Health Checks</b></summary>
+<br/>
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/health/live` | Liveness probe |
-| `GET` | `/health/ready` | Readiness probe (checks DB) |
+| `GET` | `/health/live` | Liveness — `200 OK` if server is running |
+| `GET` | `/health/ready` | Readiness — checks live DB connectivity |
+
+</details>
 
 ---
 
-## ?? Environment Variables
+## ⚙️ Environment Reference
 
 ```env
-# App
+# ── Application ────────────────────────────────────────
 APP_NAME=CyberTrack Nexus
 APP_VERSION=0.1.0
-ENVIRONMENT=development
+ENVIRONMENT=development              # development | staging | production
 
-# Database
+# ── Database ───────────────────────────────────────────
 DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/cybertrack
 
-# Security
-SECRET_KEY=your-secret-key-here
+# ── Security ───────────────────────────────────────────
+SECRET_KEY=change-me-to-32-random-chars
 ACCESS_TOKEN_EXPIRE_MINUTES=60
-DEV_AUTH_ENABLED=true
+DEV_AUTH_ENABLED=true                # ⚠️  Always false in production
 
-# CORS
+# ── CORS ───────────────────────────────────────────────
 ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 
-# API
+# ── API ────────────────────────────────────────────────
 API_V1_PREFIX=/api/v1
 
-# Storage
-STORAGE_BACKEND=local
+# ── Storage ────────────────────────────────────────────
+STORAGE_BACKEND=local                # local | s3
 LOCAL_STORAGE_PATH=./uploads
 MAX_UPLOAD_SIZE_MB=10
 ```
 
 ---
 
-## ??? Tech Stack
+## 🛠️ Tech Stack
 
-### Backend
-| Layer | Technology |
-|---|---|
-| Framework | FastAPI (async) |
-| ORM | SQLAlchemy 2.x (async) |
-| Database | PostgreSQL + asyncpg |
-| Migrations | Alembic |
-| Auth | python-jose (JWT) � passlib (bcrypt) |
-| Validation | Pydantic v2 |
-| Rate Limiting | slowapi |
-| Logging | structlog |
-| Server | Uvicorn |
-
-### Frontend
-| Layer | Technology |
-|---|---|
-| Framework | React + Vite |
-| Dev Server | http://localhost:5173 |
+| Layer | Technology | Why |
+|---|---|---|
+| **API Framework** | FastAPI (async) | Auto OpenAPI · async-native · type-safe |
+| **ORM** | SQLAlchemy 2.x async | Fully typed · composable queries |
+| **Database** | PostgreSQL + asyncpg | JSONB · constraints · foreign keys |
+| **Migrations** | Alembic | Version-controlled schema evolution |
+| **Auth** | python-jose + passlib | JWT HS256 · bcrypt hashing |
+| **Validation** | Pydantic v2 | Request/response enforcement |
+| **Rate Limiting** | slowapi | Per-IP request throttling |
+| **Logging** | structlog | Structured JSON log events |
+| **ASGI Server** | Uvicorn | Production-grade async server |
+| **Frontend** | React + Vite + TypeScript | SPA with type safety and fast HMR |
 
 ---
 
-## ?? Supported Platforms
+## 🌐 Supported Cyber Platforms
 
-The platform registry supports any cybersecurity learning platform via the `supported_capabilities` JSONB field:
+The platform registry is fully extensible via the `supported_capabilities` JSONB field:
 
-- ?? **TryHackMe** � Lab completions, room progress
-- ? **Hack The Box** � Machine pwns, challenge solves
-- ?? **LeetCode** � Contest ratings, problem count
-- ?? **Coursera / edX** � Course certificates
-- ?? **Cisco NetAcad** � Networking certifications
-- ?? **CompTIA / EC-Council** � Industry certifications
+| Platform | Focus Area | Tracked Metrics |
+|---|---|---|
+| 🔴 TryHackMe | Beginner–Intermediate labs | Room completions · XP · Daily streak |
+| ⬛ Hack The Box | Advanced penetration testing | Machine solves · Pro rank · Blood |
+| 🟡 LeetCode | Competitive programming | Rating · Problems solved · Contest rank |
+| 🟢 Coursera / edX | MOOCs & specialisations | Course completions · Certificates |
+| 🔵 Cisco NetAcad | Network fundamentals | Module progress · Badge earn |
+| 🟠 CompTIA / EC-Council | Industry certifications | Certificate upload · Verification status |
 
 ---
 
-## ?? Contributing
+## 🤝 Contributing
 
-1. **Fork** the repository
-2. **Create** your feature branch: `git checkout -b feature/amazing-feature`
-3. **Commit** your changes: `git commit -m 'feat: add amazing feature'`
-4. **Push** to the branch: `git push origin feature/amazing-feature`
-5. **Open** a Pull Request
+We welcome contributions from faculty, students, and the open-source community!
+
+```bash
+# Fork & clone
+git clone https://github.com/<your-username>/cybertrack-nexus.git
+
+# Create a feature branch
+git checkout -b feature/your-feature-name
+
+# Commit using conventional commits
+git commit -m "feat: describe your change"
+
+# Push and open a Pull Request
+git push origin feature/your-feature-name
+```
 
 ### Commit Convention
-```
-feat:     New feature
-fix:      Bug fix
-docs:     Documentation only
-refactor: Code change (no feature/fix)
-test:     Adding or updating tests
-chore:    Build process or tooling
-```
+
+| Prefix | When to use |
+|---|---|
+| `feat:` | A new feature |
+| `fix:` | A bug fix |
+| `docs:` | Documentation only |
+| `refactor:` | Code change without feature/fix |
+| `test:` | Adding or updating tests |
+| `chore:` | Build tooling / dependencies |
+| `security:` | Security fix or hardening |
 
 ---
 
-## ?? Institution
+## 🏫 Institution
+
+<div align="center">
 
 **Nandha Engineering College**  
-Department of Computer Science & Engineering  
-Erode, Tamil Nadu, India
+Department of Computer Science & Engineering (Cyber Security)  
+Erode, Tamil Nadu, India  
+
+*Affiliated to Anna University · Approved by AICTE*
+
+</div>
 
 ---
 
-## ?? License
+## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
 
-Built with ?? for cybersecurity education at Nandha Engineering College
+**Built with ❤️ by the CSE team at Nandha Engineering College**
 
-? **Star this repo** if CyberTrack Nexus helps your institution!
+*Empowering every cybersecurity student to track, prove, and grow their skills.*
+
+<br/>
+
+[![Stars](https://img.shields.io/github/stars/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/stargazers)
+[![Forks](https://img.shields.io/github/forks/nanthishvaran17/cybertrack-nexus?style=social)](https://github.com/nanthishvaran17/cybertrack-nexus/fork)
+
+⭐ **Star this repo** if CyberTrack Nexus helps your institution!
 
 </div>
