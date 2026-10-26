@@ -93,7 +93,7 @@ async def seed() -> None:
             )
             db.add(dept)
             await db.flush()
-            print(f"✓ Created department: {dept.name}")
+            print(f"[+] Created department: {dept.name}")
         else:
             print(f"  Department already exists: {dept.name}")
 
@@ -117,7 +117,7 @@ async def seed() -> None:
 
             role = UserRole_(user_id=hod.id, role=UserRole.HOD, granted_by=hod.id)
             db.add(role)
-            print(f"✓ Created HOD user: {hod_email} (password: {hod_pw})")
+            print(f"[+] Created HOD user: {hod_email} (password: {hod_pw})")
         else:
             print(f"  HOD user already exists: {hod_email}")
 
@@ -130,12 +130,12 @@ async def seed() -> None:
             if not existing:
                 platform = Platform(**p_data)
                 db.add(platform)
-                print(f"✓ Created platform: {p_data['display_name']}")
+                print(f"[+] Created platform: {p_data['display_name']}")
             else:
                 print(f"  Platform already exists: {p_data['display_name']}")
 
         await db.commit()
-        print("\n✅ Seed complete.")
+        print("\n[SUCCESS] Seed complete.")
 
 
 if __name__ == "__main__":

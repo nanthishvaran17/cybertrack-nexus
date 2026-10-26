@@ -1,9 +1,9 @@
 // Platforms page — shows all platforms, linked accounts, and sync status
 import { useQuery } from '@tanstack/react-query';
-import { Globe, CheckCircle2, Clock, AlertTriangle, XCircle, Link } from 'lucide-react';
+import { CheckCircle2, Clock, AlertTriangle, XCircle, Link } from 'lucide-react';
 import api from '@/lib/api';
 import type { Platform, PlatformAccount } from '@/types';
-import { cn, statusBadgeClass, statusLabel, formatDateTime } from '@/lib/utils';
+import { cn, statusBadgeClass, statusLabel } from '@/lib/utils';
 
 const PLATFORM_ICONS: Record<string, string> = {
   cisco_netacad: '🌐',

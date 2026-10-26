@@ -18,6 +18,7 @@ uploads/
 node_modules/
 dist/
 .vite/
+*.tsbuildinfo
 
 # IDE
 .vscode/

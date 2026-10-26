@@ -102,7 +102,7 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     # relationships
-    roles: Mapped[list["UserRole_"]] = relationship("UserRole_", back_populates="user", cascade="all, delete-orphan")
+    roles: Mapped[list["UserRole_"]] = relationship("UserRole_", foreign_keys="[UserRole_.user_id]", back_populates="user", cascade="all, delete-orphan")
     mentor_assignments: Mapped[list["MentorAssignment"]] = relationship("MentorAssignment", foreign_keys="MentorAssignment.mentor_user_id", back_populates="mentor")
     notifications: Mapped[list["Notification"]] = relationship("Notification", back_populates="recipient")
     audit_logs: Mapped[list["AuditLog"]] = relationship("AuditLog", back_populates="actor")

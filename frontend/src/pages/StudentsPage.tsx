@@ -1,6 +1,6 @@
 // Student directory with search, filters, pagination, and profile navigation
-import { useState, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, Filter, ChevronLeft, ChevronRight,
@@ -8,14 +8,14 @@ import {
 } from 'lucide-react';
 import api from '@/lib/api';
 import type { PaginatedResponse, Student } from '@/types';
-import { cn, formatDate, statusBadgeClass } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debounced, setDebounced] = useState(value);
-  useCallback(() => {
+  useEffect(() => {
     const t = setTimeout(() => setDebounced(value), delay);
     return () => clearTimeout(t);
-  }, [value, delay])();
+  }, [value, delay]);
   return debounced;
 }
 
@@ -43,8 +43,8 @@ export default function StudentsPage() {
       return res.data;
     },
     staleTime: 30_000,
-    keepPreviousData: true,
-  } as Parameters<typeof useQuery>[0]);
+    placeholderData: keepPreviousData,
+  });
 
   const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1;
 

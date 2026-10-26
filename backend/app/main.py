@@ -1,7 +1,12 @@
 """FastAPI application entry point for CyberTrack Nexus."""
 from __future__ import annotations
 
+import asyncio
+import sys
 import uuid
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 import structlog
 from fastapi import FastAPI, Request, status
@@ -84,7 +89,8 @@ async def readiness() -> dict:
         async with AsyncSessionLocal() as session:
             await session.execute(text("SELECT 1"))
         db_status = "ok"
-    except Exception:
+    except Exception as exc:
+        log.error("readiness_db_error", error=str(exc))
         db_status = "unavailable"
 
     http_status = status.HTTP_200_OK if db_status == "ok" else status.HTTP_503_SERVICE_UNAVAILABLE

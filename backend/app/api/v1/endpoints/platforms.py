@@ -46,10 +46,6 @@ class PlatformAccountOut(BaseModel):
 # ─── platforms ────────────────────────────────────────────────────────────────
 
 
-@APIRouter(prefix="/platforms")
-class _PlatformsNS:
-    pass
-
 
 platforms_router = APIRouter(prefix="/platforms", tags=["platforms"])
 accounts_router = APIRouter(prefix="/platform-accounts", tags=["platforms"])

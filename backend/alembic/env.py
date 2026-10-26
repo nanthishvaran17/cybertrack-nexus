@@ -3,17 +3,28 @@ from __future__ import annotations
 
 import asyncio
 import os
+import sys
 from logging.config import fileConfig
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from alembic import context
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlalchemy.pool import NullPool
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from app.db.database import Base
 from app.models import models  # noqa: F401 — import models to register them
 
 config = context.config
-config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"].replace("postgres://", "postgresql+psycopg://").replace("postgresql://", "postgresql+psycopg://"))
+raw_db_url = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_W0ihJ1PKujEx@ep-fragrant-boat-b5bjd6aw.c-7.us-east-2.aws.neon.tech/cybertrack_nexus?sslmode=require")
+config.set_main_option(
+    "sqlalchemy.url",
+    raw_db_url.replace("postgres://", "postgresql+psycopg://").replace("postgresql://", "postgresql+psycopg://"),
+)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
