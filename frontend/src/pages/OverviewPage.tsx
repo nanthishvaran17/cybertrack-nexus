@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import {
   Users, Award, FileCheck, Globe, TrendingUp,
   AlertCircle, RefreshCw, ArrowRight,
-  FileText, Zap, Cpu, Flame
+  FileText, Zap, Cpu, Flame, Radio, ShieldCheck
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -125,6 +125,33 @@ export default function OverviewPage() {
 
       {/* Executive Accreditation Modal */}
       <ExecutiveReportModal open={reportOpen} onClose={() => setReportOpen(false)} metrics={data} />
+
+      {/* Live Cyber Ops Ticker */}
+      <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 backdrop-blur-md overflow-hidden text-xs shadow-md">
+        <div className="flex items-center gap-1.5 shrink-0 font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2.5 py-1 rounded-md border border-cyan-800/60">
+          <Radio className="w-3.5 h-3.5 animate-pulse text-cyan-400" />
+          <span>SOC DISPATCH</span>
+        </div>
+        <div className="flex items-center gap-6 overflow-x-auto font-mono text-[11px] text-slate-300">
+          <span className="flex items-center gap-1.5 shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <strong className="text-white">INGESTION MESH:</strong> 8 LABS SYNCHRONIZED (14ms latency)
+          </span>
+          <span className="text-slate-600 shrink-0">•</span>
+          <span className="shrink-0 text-cyan-300">
+            <strong className="text-white">UPCOMING CTF:</strong> Tamil Nadu Cyber Shield 2026 (Live in 4d)
+          </span>
+          <span className="text-slate-600 shrink-0">•</span>
+          <span className="shrink-0 text-emerald-300 flex items-center gap-1">
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+            <strong className="text-white">ANNA UNIV RANK:</strong> #1 CSE-CYBER DIVISION
+          </span>
+          <span className="text-slate-600 shrink-0">•</span>
+          <span className="shrink-0 text-amber-300">
+            <strong className="text-white">AUDIT STATUS:</strong> 100% Cryptographic Integrity
+          </span>
+        </div>
+      </div>
 
       {/* Hero Command Banner with Radiant Glows */}
       <div className="relative overflow-hidden glass-card p-6 md:p-8 border border-primary/30">

@@ -172,7 +172,7 @@ export default function AnalyticsPage() {
                   cursor={{ fill: 'rgba(6, 182, 212, 0.05)' }}
                 />
                 <Bar dataKey="count" radius={[6, 6, 0, 0]}>
-                  {data.platform_adoption.map((_, i) => (
+                  {(data.platform_adoption || []).map((_, i) => (
                     <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                   ))}
                 </Bar>
