@@ -49,6 +49,31 @@ function SocLiveIndicator() {
 }
 
 
+function ThemeToggle() {
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+  const toggle = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const nextDark = !isDark;
+    if (nextDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    setDark(nextDark);
+    localStorage.setItem('ctn_theme', nextDark ? 'dark' : 'light');
+  };
+  return (
+    <button
+      onClick={toggle}
+      aria-label={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+      className="p-2 rounded-lg bg-card/80 border border-border/80 hover:border-primary/40 text-muted-foreground hover:text-foreground transition-all duration-200"
+      title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+    >
+      {dark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-primary" />}
+    </button>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, logout, hasRole } = useAuth();
   const navigate = useNavigate();
@@ -257,9 +282,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           {/* Theme Toggle */}
           <ThemeToggle />
-
-          {/* Live SOC Indicator */}
-          <SocLiveIndicator />
 
           {/* Notifications */}
           <div className="relative">
