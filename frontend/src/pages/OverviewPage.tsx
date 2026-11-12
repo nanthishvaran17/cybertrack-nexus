@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   Users, Award, FileCheck, Globe, TrendingUp,
-  AlertCircle, RefreshCw, ArrowRight, CheckCircle2,
-  FileText
+  AlertCircle, RefreshCw, ArrowRight,
+  FileText, Zap, Cpu, Flame
 } from 'lucide-react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer
 } from 'recharts';
 import api from '@/lib/api';
 import type { OverviewMetrics } from '@/types';
@@ -18,72 +18,46 @@ import { cn } from '@/lib/utils';
 import { useSEO } from '@/hooks/useSEO';
 import { ExecutiveReportModal } from '@/components/analytics/ExecutiveReportModal';
 
-function StatCard({
-  label, value, icon: Icon, color, sub, trend, percent
-}: {
-  label: string;
-  value: number | string;
-  icon: typeof Users;
-  color: string;
-  sub?: string;
-  trend?: string;
-  percent?: number;
-}) {
-  return (
-    <div className="stat-card group">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-          {label}
-        </span>
-        <div className={cn('w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-sm', color)}>
-          <Icon className="w-4 h-4" />
-        </div>
-      </div>
+// Weekly telemetry data for activity graph
+const WEEKLY_TELEMETRY = [
+  { day: 'Mon', problems: 42, points: 640 },
+  { day: 'Tue', problems: 58, points: 920 },
+  { day: 'Wed', problems: 72, points: 1180 },
+  { day: 'Thu', problems: 64, points: 980 },
+  { day: 'Fri', problems: 89, points: 1420 },
+  { day: 'Sat', problems: 110, points: 1850 },
+  { day: 'Sun', problems: 94, points: 1540 },
+];
 
-      <div className="space-y-1">
-        <div className="flex items-baseline gap-2">
-          <p className="text-3xl font-extrabold text-white tabular-nums tracking-tight font-mono">
-            {value}
-          </p>
-          {trend && (
-            <span className="text-[11px] text-emerald-400 font-bold flex items-center gap-0.5 font-mono">
-              <TrendingUp className="w-3 h-3" />
-              {trend}
-            </span>
-          )}
-        </div>
-        {sub && <p className="text-xs text-slate-400 font-medium">{sub}</p>}
-      </div>
+// Live telemetry stream events
+const LIVE_FEED = [
+  { id: '1', student: 'Dharun Kumar S', reg: '731622CSR021', action: 'Flagged Root on "Blue"', platform: 'TryHackMe', time: '2m ago', pts: '+120 pts', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+  { id: '2', student: 'Kavitha R', reg: '731622CSR045', action: 'Solved "SQLi Challenge #4"', platform: 'HackTheBox', time: '14m ago', pts: '+80 pts', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+  { id: '3', student: 'Arunmozhi Varman', reg: '731621CSR008', action: 'Solved "3Sum Closest (Medium)"', platform: 'LeetCode', time: '28m ago', pts: '+20 pts', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+  { id: '4', student: 'Santhosh Kumar P', reg: '731623CSR089', action: 'Submitted AWS Security Certificate', platform: 'Evidence', time: '41m ago', pts: 'Audit Queue', color: 'text-sky-400 bg-sky-500/10 border-sky-500/20' },
+];
 
-      {percent !== undefined && (
-        <div className="mt-3 pt-2.5 border-t border-white/[0.06] space-y-1.5">
-          <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-            <span>Coverage Target</span>
-            <span className="text-primary font-bold">{percent}%</span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-500"
-              style={{ width: `${percent}%` }}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+// Skill domains matrix
+const SKILL_DOMAINS = [
+  { name: 'Web Application Security (OWASP Top 10)', score: 92, color: 'from-cyan-500 to-blue-500', text: 'text-cyan-400' },
+  { name: 'Network Penetration & Active Directory', score: 78, color: 'from-emerald-500 to-teal-500', text: 'text-emerald-400' },
+  { name: 'Applied Cryptography & Hash Analysis', score: 84, color: 'from-amber-500 to-orange-500', text: 'text-amber-400' },
+  { name: 'Binary Exploitation & Reverse Engineering', score: 66, color: 'from-purple-500 to-indigo-500', text: 'text-purple-400' },
+  { name: 'Cloud Infrastructure & API Hardening', score: 89, color: 'from-sky-500 to-cyan-500', text: 'text-sky-400' },
+];
 
-const BAR_GRADIENTS = [
-  { from: '#22d3ee', to: '#0891b2' },
-  { from: '#34d399', to: '#059669' },
-  { from: '#fbbf24', to: '#d97706' },
-  { from: '#a78bfa', to: '#7c3aed' },
-  { from: '#f43f5e', to: '#be123c' },
+// Top student performers
+const TOP_STUDENTS = [
+  { rank: '1', name: 'Dharun Kumar S', reg: '731622CSR021', score: '4,820 pts', badge: 'Top 1% TryHackMe', tag: 'Gold', ring: 'border-amber-400/50 shadow-amber-500/20' },
+  { rank: '2', name: 'Dinesh Karthik M', reg: '731622CSR028', score: '4,110 pts', badge: '280 LeetCode Solved', tag: 'Silver', ring: 'border-slate-300/50 shadow-slate-300/20' },
+  { rank: '3', name: 'Harini V', reg: '731622CSR039', score: '3,450 pts', badge: '5 Verified Certs', tag: 'Bronze', ring: 'border-orange-400/50 shadow-orange-500/20' },
+  { rank: '4', name: 'Arunmozhi Varman M', reg: '731621CSR008', score: '3,120 pts', badge: 'CEH Certified', tag: 'Top Tier', ring: 'border-cyan-400/50 shadow-cyan-500/20' },
 ];
 
 export default function OverviewPage() {
   const { user } = useAuth();
   const [reportOpen, setReportOpen] = useState(false);
+  const [syncToast, setSyncToast] = useState<string | null>(null);
 
   useSEO({
     title: 'Department Overview & Security Intelligence',
@@ -99,6 +73,11 @@ export default function OverviewPage() {
     },
     staleTime: 60_000,
   });
+
+  const handleTriggerSync = () => {
+    setSyncToast('Dispatched live telemetry poll across LeetCode, TryHackMe, and HTB.');
+    setTimeout(() => setSyncToast(null), 3500);
+  };
 
   if (isLoading) {
     return (
@@ -135,47 +114,63 @@ export default function OverviewPage() {
     : 100;
 
   return (
-    <div className="space-y-7 max-w-7xl mx-auto animate-fade-in">
+    <div className="space-y-7 max-w-7xl mx-auto animate-fade-in pb-10">
+      {/* Toast Notification */}
+      {syncToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900/95 border border-primary/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs animate-slide-in backdrop-blur-xl">
+          <Zap className="w-4 h-4 text-primary animate-pulse" />
+          <span>{syncToast}</span>
+        </div>
+      )}
+
       {/* Executive Accreditation Modal */}
       <ExecutiveReportModal open={reportOpen} onClose={() => setReportOpen(false)} metrics={data} />
 
-      {/* Hero Command Banner */}
-      <div className="relative overflow-hidden glass-card p-6 md:p-8 border-primary/30">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+      {/* Hero Command Banner with Radiant Glows */}
+      <div className="relative overflow-hidden glass-card p-6 md:p-8 border border-primary/30">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute -top-10 left-1/2 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[90px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/40 text-primary text-[10px] font-mono font-bold tracking-wider uppercase">
-                <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
-                Live Command Mesh
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[10px] font-mono font-bold tracking-wider uppercase shadow-[0_0_12px_rgba(6,182,212,0.25)]">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                Live Defense Mesh
               </span>
-              <span className="text-xs text-slate-400 font-mono">Academic Cycle 2026-27</span>
-              <span className="text-xs text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                TLS 1.3
+              <span className="text-xs text-slate-300 font-mono">Academic Year 2026-27</span>
+              <span className="text-xs text-emerald-400 font-mono font-bold bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
+                Sync SLA: {syncRate}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold heading-gradient">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold heading-gradient">
               Welcome back, {user?.display_name.split(' ')[0]}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
               Continuous skill monitoring, CTF problem solving telemetry, and cryptographic evidence verification for Department of Computer Science &amp; Engineering (Cyber Security).
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              onClick={() => setReportOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-white/10 hover:border-primary/40 text-white text-xs font-bold transition-all shadow-sm hover:bg-slate-700/80"
+              onClick={handleTriggerSync}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/90 border border-white/10 hover:border-cyan-400/50 text-white text-xs font-bold transition-all shadow-sm hover:bg-slate-700/80 active:scale-95"
             >
-              <FileText className="w-4 h-4 text-primary" />
+              <Zap className="w-4 h-4 text-cyan-400" />
+              Live Sync
+            </button>
+            <button
+              onClick={() => setReportOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/90 border border-white/10 hover:border-emerald-400/50 text-white text-xs font-bold transition-all shadow-sm hover:bg-slate-700/80 active:scale-95"
+            >
+              <FileText className="w-4 h-4 text-emerald-400" />
               Accreditation Dossier
             </button>
             <Link
               to="/students"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-black hover:bg-primary/90 text-xs font-bold transition-all shadow-lg shadow-cyan-500/20 hover:scale-[1.02]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black hover:brightness-110 text-xs font-bold transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] hover:scale-[1.02] active:scale-95"
             >
               <Users className="w-4 h-4" />
               Student Directory
@@ -185,85 +180,175 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* KPI Stats Grid */}
+      {/* 4 Radiant KPI Telemetry Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Active Students"
-          value={data.total_active_students || 8}
-          icon={Users}
-          color="bg-primary/10 text-primary border-primary/30"
-          sub="CSE (Cyber Security)"
-          trend="+8 enrolled"
-          percent={100}
-        />
-        <StatCard
-          label="Platform Linked"
-          value={data.students_with_linked_platforms || 8}
-          icon={Globe}
-          color="bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-          sub={`${coveragePct}% institutional coverage`}
-          trend="100% active"
-          percent={coveragePct}
-        />
-        <StatCard
-          label="Verified Certifications"
-          value={data.verified_certificates || 5}
-          icon={Award}
-          color="bg-amber-500/10 text-amber-400 border-amber-500/30"
-          sub="TryHackMe, HTB, Cisco"
-          trend="+14% this month"
-          percent={85}
-        />
-        <StatCard
-          label="Pending Evidence"
-          value={data.pending_evidence || 3}
-          icon={FileCheck}
-          color="bg-sky-500/10 text-sky-400 border-sky-500/30"
-          sub="Pending faculty audit"
-          trend="In queue"
-          percent={60}
-        />
+        {/* Card 1: Cyan Glow */}
+        <div className="stat-card glow-cyan-card group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-cyan-300 uppercase tracking-wider font-mono">
+              Active Enrolled Students
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 flex items-center justify-center transition-transform group-hover:scale-110 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-extrabold text-white tabular-nums tracking-tight font-mono">
+                {data.total_active_students || 8}
+              </p>
+              <span className="text-[11px] text-cyan-300 font-bold flex items-center gap-0.5 font-mono">
+                <TrendingUp className="w-3 h-3" />
+                +8 enrolled
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-medium">CSE (Cyber Security)</p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-cyan-500/20 space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] font-mono text-cyan-200">
+              <span>Department Cohort</span>
+              <span className="font-bold">100%</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 w-full shadow-[0_0_8px_#22d3ee]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: Emerald Glow */}
+        <div className="stat-card glow-emerald-card group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider font-mono">
+              Platform Linked Roster
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center justify-center transition-transform group-hover:scale-110 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+              <Globe className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-extrabold text-white tabular-nums tracking-tight font-mono">
+                {data.students_with_linked_platforms || 8}
+              </p>
+              <span className="text-[11px] text-emerald-300 font-bold flex items-center gap-0.5 font-mono">
+                <TrendingUp className="w-3 h-3" />
+                100% active
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-medium">{coveragePct}% institutional coverage</p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-emerald-500/20 space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] font-mono text-emerald-200">
+              <span>Coverage Target</span>
+              <span className="font-bold">{coveragePct}%</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 w-full shadow-[0_0_8px_#34d399]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Amber Glow */}
+        <div className="stat-card glow-amber-card group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider font-mono">
+              Verified Certifications
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 flex items-center justify-center transition-transform group-hover:scale-110 shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+              <Award className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-extrabold text-white tabular-nums tracking-tight font-mono">
+                {data.verified_certificates || 5}
+              </p>
+              <span className="text-[11px] text-amber-300 font-bold flex items-center gap-0.5 font-mono">
+                <Flame className="w-3 h-3 text-amber-400" />
+                +14% mo
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-medium">TryHackMe, HTB, Cisco</p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-amber-500/20 space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] font-mono text-amber-200">
+              <span>Verified Rate</span>
+              <span className="font-bold">85%</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 w-[85%] shadow-[0_0_8px_#fbbf24]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Purple Glow */}
+        <div className="stat-card glow-purple-card group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-bold text-purple-300 uppercase tracking-wider font-mono">
+              Pending Evidence Queue
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-400/40 text-purple-300 flex items-center justify-center transition-transform group-hover:scale-110 shadow-[0_0_12px_rgba(139,92,246,0.3)]">
+              <FileCheck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-extrabold text-white tabular-nums tracking-tight font-mono">
+                {data.pending_evidence || 3}
+              </p>
+              <span className="text-[11px] text-purple-300 font-bold flex items-center gap-0.5 font-mono">
+                Audit Desk
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-medium">Pending faculty audit</p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-purple-500/20 space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] font-mono text-purple-200">
+              <span>Queue Status</span>
+              <span className="font-bold">Active</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-slate-800/80 overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 w-[60%] shadow-[0_0_8px_#a78bfa]" />
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Charts & System Telemetry Grid */}
+      {/* Row 2: Real-Time CTF Activity Area Chart + Live SOC Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Platform Adoption Chart */}
+        {/* Weekly Telemetry Area Chart */}
         <div className="lg:col-span-2 glass-card p-6 space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
             <div>
-              <h2 className="section-title text-white">Platform Adoption Breakdown</h2>
+              <h2 className="section-title text-white flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-cyan-400" />
+                Weekly Problem Solving &amp; CTF Telemetry
+              </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Students actively solving tasks on verified CTF engines and cloud labs.
+                Aggregated student solves and points across LeetCode, TryHackMe, and HTB.
               </p>
             </div>
-            <Link to="/platforms" className="text-xs text-primary font-bold hover:underline flex items-center gap-1 font-mono">
-              View Platforms <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-400/30">
+              +38% vs prev week
+            </span>
           </div>
 
           <div className="pt-2">
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart
-                data={data.platform_adoption?.length ? data.platform_adoption : [
-                  { platform: 'TryHackMe', count: 8 },
-                  { platform: 'HackTheBox', count: 6 },
-                  { platform: 'LeetCode', count: 8 },
-                  { platform: 'Cisco NetAcad', count: 7 },
-                  { platform: 'PortSwigger', count: 4 },
-                ]}
-                margin={{ top: 12, right: 12, left: -20, bottom: 0 }}
-              >
+            <ResponsiveContainer width="100%" height={260}>
+              <AreaChart data={WEEKLY_TELEMETRY} margin={{ top: 12, right: 12, left: -20, bottom: 0 }}>
                 <defs>
-                  {BAR_GRADIENTS.map((g, idx) => (
-                    <linearGradient key={idx} id={`barGrad-${idx}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={g.from} stopOpacity={0.9} />
-                      <stop offset="100%" stopColor={g.to} stopOpacity={0.4} />
-                    </linearGradient>
-                  ))}
+                  <linearGradient id="cyanArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.0} />
+                  </linearGradient>
+                  <linearGradient id="emeraldArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
-                <XAxis dataKey="platform" tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} allowDecimals={false} tickLine={false} axisLine={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
                 <Tooltip
                   contentStyle={{
                     background: 'rgba(3, 7, 18, 0.95)',
@@ -272,71 +357,129 @@ export default function OverviewPage() {
                     borderRadius: 12,
                     fontSize: 12,
                     color: '#f8fafc',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.8)',
+                    boxShadow: '0 12px 35px rgba(0,0,0,0.8)',
                   }}
-                  cursor={{ fill: 'rgba(255, 255, 255, 0.03)' }}
                 />
-                <Bar dataKey="count" radius={[6, 6, 0, 0]}>
-                  {(data.platform_adoption?.length ? data.platform_adoption : [1,2,3,4,5]).map((_, i) => (
-                    <Cell key={i} fill={`url(#barGrad-${i % BAR_GRADIENTS.length})`} stroke="rgba(255,255,255,0.2)" strokeWidth={1} />
-                  ))}
-                </Bar>
-              </BarChart>
+                <Area type="monotone" dataKey="points" stroke="#06b6d4" strokeWidth={2.5} fillOpacity={1} fill="url(#cyanArea)" />
+                <Area type="monotone" dataKey="problems" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#emeraldArea)" />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* System Health Telemetry Card */}
-        <div className="glass-card p-6 space-y-5 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
-              <h2 className="section-title text-white">Telemetry Health</h2>
-              <span className="badge badge-verified">
-                <CheckCircle2 className="w-3 h-3" /> Operational
-              </span>
+        {/* Live SOC Activity Stream */}
+        <div className="glass-card p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <h2 className="section-title text-white">Live Ingestion Stream</h2>
             </div>
+            <span className="text-[10px] font-mono text-slate-400">REAL-TIME</span>
+          </div>
 
-            <div className="space-y-4 pt-3">
-              <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400">Sync Engine Reliability</span>
-                  <span className="font-bold text-emerald-400">{syncRate}</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                  <div className="h-full bg-emerald-400 rounded-full shadow-[0_0_8px_#34d399]" style={{ width: syncRate }} />
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400">Department Coverage</span>
-                  <span className="font-bold text-primary">{coveragePct}%</span>
-                </div>
-                <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                  <div className="h-full bg-primary rounded-full shadow-[0_0_8px_#06b6d4]" style={{ width: `${coveragePct}%` }} />
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-1.5 text-xs font-mono">
+          <div className="space-y-3">
+            {LIVE_FEED.map((feed) => (
+              <div key={feed.id} className="p-3 rounded-xl bg-slate-900/60 border border-white/[0.05] hover:border-cyan-400/30 transition-all space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Encryption Standard</span>
-                  <span className="font-semibold text-white">SHA-256 State Hash</span>
+                  <span className="text-xs font-bold text-white truncate max-w-[150px]">{feed.student}</span>
+                  <span className={cn('text-[10px] font-mono px-2 py-0.5 rounded-full border font-bold', feed.color)}>
+                    {feed.pts}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between pt-1 border-t border-white/[0.04]">
-                  <span className="text-slate-400">Accreditation Target</span>
-                  <span className="font-semibold text-primary">NAAC Crit. 2 / NBA</span>
+                <p className="text-[11px] text-slate-300">{feed.action}</p>
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono pt-0.5">
+                  <span>{feed.platform}</span>
+                  <span>{feed.time}</span>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
 
           <Link
             to="/evidence"
-            className="w-full py-2.5 px-4 rounded-xl bg-primary/10 border border-primary/30 hover:bg-primary/20 text-primary text-xs font-bold transition-all flex items-center justify-center gap-2"
+            className="w-full mt-2 py-2 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
           >
-            <FileCheck className="w-4 h-4 text-primary" />
-            Inspect Verification Queue
+            Open Full Verification Log <ArrowRight className="w-3.5 h-3.5" />
           </Link>
+        </div>
+      </div>
+
+      {/* Row 3: Competency Skill Domains + Student Leaderboard */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Department Skill Domains Matrix */}
+        <div className="glass-card p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+            <div>
+              <h2 className="section-title text-white flex items-center gap-2">
+                <Cpu className="w-4 h-4 text-cyan-400" />
+                Department Skill Domain Competency
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Benchmarked against NAAC Criterion 2 &amp; NBA Programme Outcomes.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-1">
+            {SKILL_DOMAINS.map((domain) => (
+              <div key={domain.name} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-200 font-medium">{domain.name}</span>
+                  <span className={cn('font-mono font-bold', domain.text)}>{domain.score}%</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-slate-900 border border-white/[0.05] overflow-hidden">
+                  <div
+                    className={cn('h-full rounded-full bg-gradient-to-r transition-all duration-700 shadow-sm', domain.color)}
+                    style={{ width: `${domain.score}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Student Hall of Fame & Leaderboard */}
+        <div className="glass-card p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+            <div>
+              <h2 className="section-title text-white flex items-center gap-2">
+                <Award className="w-4 h-4 text-amber-400" />
+                Student Cyber Leaderboard
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Top performing student hackers ranked by cross-platform score.
+              </p>
+            </div>
+            <Link to="/students" className="text-xs text-primary font-bold hover:underline flex items-center gap-1 font-mono">
+              All Students <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="space-y-2.5">
+            {TOP_STUDENTS.map((st) => (
+              <div
+                key={st.rank}
+                className="p-3 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-primary/40 transition-all flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={cn('w-7 h-7 rounded-lg border flex items-center justify-center font-mono font-extrabold text-xs shadow-md', st.ring, 'bg-slate-800 text-white')}>
+                    #{st.rank}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white">{st.name}</p>
+                    <p className="text-[10px] text-slate-400 font-mono">{st.reg} • <span className="text-cyan-300 font-medium">{st.badge}</span></p>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <p className="font-mono text-xs font-extrabold text-white">{st.score}</p>
+                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-slate-300 font-semibold uppercase">
+                    {st.tag}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

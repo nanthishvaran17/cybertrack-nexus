@@ -4,8 +4,8 @@ import { NavLink, useNavigate, Link } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Globe, Award, FileCheck, BookOpen,
   BarChart2, Activity, ClipboardList, Settings, Shield,
-  LogOut, Menu, X, Bell, ChevronDown, Moon, Sun, Zap, Search,
-  Command
+  LogOut, Menu, X, Bell, ChevronDown, Zap, Search,
+  Command, HelpCircle, Keyboard, Book, Sun, Moon
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn, getInitials } from '@/lib/utils';
@@ -33,23 +33,21 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Account & Clearance', href: '/profile', icon: Shield },
 ];
 
-function ThemeToggle() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
-  const toggle = () => {
-    document.documentElement.classList.toggle('dark');
-    setDark((v) => !v);
-    localStorage.setItem('ctn_theme', !dark ? 'dark' : 'light');
-  };
+function SocLiveIndicator() {
   return (
-    <button
-      onClick={toggle}
-      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="p-2 rounded-lg bg-card/80 border border-border/80 hover:border-primary/40 text-muted-foreground hover:text-foreground transition-all duration-200"
+    <div
+      title="SOC Defense Mesh Online • Continuous Sync Active"
+      className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-medium shadow-[0_0_12px_rgba(16,185,129,0.15)]"
     >
-      {dark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-400" />}
-    </button>
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+      </span>
+      <span className="text-[10px] font-bold tracking-wider">DEFENSE MESH</span>
+    </div>
   );
 }
+
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, logout, hasRole } = useAuth();
@@ -59,13 +57,17 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
-  // Global Ctrl+K / Cmd+K keyboard shortcut
+  // Global Ctrl+K and ? keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setCommandOpen((prev) => !prev);
+      } else if (e.key === '?' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault();
+        setHelpOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -235,6 +237,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="flex-1" />
 
           {/* Department Badge + SLA Status (unified & compact) */}
+          <SocLiveIndicator />
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-white/10 text-[11px] font-mono">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-slate-300 font-semibold">CSE (Cyber Security)</span>
@@ -242,8 +245,21 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="text-emerald-400 font-semibold">99.98% SLA</span>
           </div>
 
+          {/* Help & Hotkeys */}
+          <button
+            onClick={() => setHelpOpen(true)}
+            aria-label="Keyboard Shortcuts & Reference"
+            className="p-2 rounded-lg bg-card/80 border border-border/80 hover:border-primary/40 text-muted-foreground hover:text-foreground transition-all duration-200"
+            title="System Reference & Hotkeys (?)"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+
           {/* Theme Toggle */}
           <ThemeToggle />
+
+          {/* Live SOC Indicator */}
+          <SocLiveIndicator />
 
           {/* Notifications */}
           <div className="relative">
@@ -377,6 +393,74 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="flex-1 smooth-scroll p-6 md:p-8" id="main-content">
           {children}
         </main>
+
+        {/* Global Hotkeys & Operational Manual Modal */}
+        {helpOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+            <div className="w-full max-w-xl bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Keyboard className="w-5 h-5 text-primary" />
+                  <h2 className="font-bold text-sm text-foreground">CyberTrack Nexus — System Hotkeys &amp; Manual</h2>
+                </div>
+                <button
+                  onClick={() => setHelpOpen(false)}
+                  className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-5 text-xs">
+                <div>
+                  <h3 className="font-bold text-foreground mb-2 flex items-center gap-1.5 uppercase tracking-wider text-[11px] text-primary">
+                    <Command className="w-3.5 h-3.5" />
+                    Global Navigation Hotkeys
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div className="p-2.5 rounded-lg bg-muted/20 border border-border/60 flex items-center justify-between">
+                      <span className="text-muted-foreground">Omnisearch Command</span>
+                      <kbd className="px-2 py-0.5 rounded bg-background border border-border text-foreground font-bold">Ctrl + K</kbd>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-muted/20 border border-border/60 flex items-center justify-between">
+                      <span className="text-muted-foreground">Toggle Dark / Light</span>
+                      <kbd className="px-2 py-0.5 rounded bg-background border border-border text-foreground font-bold">Ctrl + T</kbd>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-muted/20 border border-border/60 flex items-center justify-between">
+                      <span className="text-muted-foreground">Keyboard Reference</span>
+                      <kbd className="px-2 py-0.5 rounded bg-background border border-border text-foreground font-bold">?</kbd>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-muted/20 border border-border/60 flex items-center justify-between">
+                      <span className="text-muted-foreground">Dismiss Any Modal</span>
+                      <kbd className="px-2 py-0.5 rounded bg-background border border-border text-foreground font-bold">Esc</kbd>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-border/60">
+                  <h3 className="font-bold text-foreground mb-2 flex items-center gap-1.5 uppercase tracking-wider text-[11px] text-primary">
+                    <Book className="w-3.5 h-3.5" />
+                    Institutional Accreditation Architecture
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    CyberTrack Nexus connects directly to department database ledgers with SHA-256 state hashing.
+                    Student progress on external platforms (TryHackMe, HackTheBox, LeetCode, Cisco) is continually verified
+                    and compiled for <strong>NAAC Criterion 2.3 &amp; 5.1</strong> and <strong>NBA Outcome-Based Education (OBE)</strong> audits.
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-3 border-t border-border bg-muted/20 flex justify-end">
+                <button
+                  onClick={() => setHelpOpen(false)}
+                  className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                >
+                  Got It
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

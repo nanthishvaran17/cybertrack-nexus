@@ -43,7 +43,6 @@ function ThemeInit() {
       document.documentElement.classList.remove('dark');
     } else {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('ctn_theme', 'dark');
     }
   }, []);
   return null;
