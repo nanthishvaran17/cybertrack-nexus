@@ -373,8 +373,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 animate-fade-in" id="main-content">
+        {/* Page Content with Silk Smooth Scroll */}
+        <main className="flex-1 smooth-scroll p-6 md:p-8" id="main-content">
           {children}
         </main>
       </div>

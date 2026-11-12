@@ -54,12 +54,48 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
       category: 'Quick Actions',
     },
     {
+      label: 'Enroll New Student into Ledger',
+      action: () => {
+        navigate('/students');
+        onClose();
+      },
+      icon: Users,
+      category: 'Quick Actions',
+    },
+    {
       label: 'Review Pending Evidence Queue',
       action: () => {
         navigate('/evidence');
         onClose();
       },
       icon: FileCheck,
+      category: 'Quick Actions',
+    },
+    {
+      label: 'Link External Learning Platform Account',
+      action: () => {
+        navigate('/platforms');
+        onClose();
+      },
+      icon: Globe,
+      category: 'Quick Actions',
+    },
+    {
+      label: 'Register Industry Certification',
+      action: () => {
+        navigate('/certifications');
+        onClose();
+      },
+      icon: Award,
+      category: 'Quick Actions',
+    },
+    {
+      label: 'Generate Accreditation Dossier (PDF)',
+      action: () => {
+        navigate('/analytics');
+        onClose();
+      },
+      icon: BarChart2,
       category: 'Quick Actions',
     },
     {

@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import {
-  Award, Search, Filter, CheckCircle2, Clock, XCircle,
-  Download, ShieldCheck, Calendar, FileText
+  Award, Search, CheckCircle2, Clock, XCircle,
+  Download, ShieldCheck, FileText, Plus, X,
+  Shield, Hash
 } from 'lucide-react';
 import { useSEO } from '@/hooks/useSEO';
-import { cn } from '@/lib/utils';
 
 interface CertificateRecord {
   id: string;
@@ -132,18 +132,34 @@ export default function CertificationsPage() {
     keywords: ['certifications', 'cybersecurity credentials', 'TryHackMe', 'CompTIA', 'CEH', 'Nandha Engineering College'],
   });
 
+  const [certificates, setCertificates] = useState<CertificateRecord[]>(INITIAL_CERTIFICATES);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'awaiting' | 'rejected'>('all');
   const [issuerFilter, setIssuerFilter] = useState<string>('all');
   const [selectedCert, setSelectedCert] = useState<CertificateRecord | null>(null);
+  const [addCertModalOpen, setAddCertModalOpen] = useState(false);
+  const [verifyInput, setVerifyInput] = useState('');
+  const [verifyResult, setVerifyResult] = useState<{ found: boolean; cert?: CertificateRecord } | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // New Cert State
+  const [newCert, setNewCert] = useState({
+    student_name: '',
+    register_number: '',
+    year: 3,
+    section: 'A',
+    title: '',
+    issuer: 'TryHackMe',
+    credential_id: '',
+  });
 
   const issuers = useMemo(() => {
-    const list = Array.from(new Set(INITIAL_CERTIFICATES.map((c) => c.issuer)));
+    const list = Array.from(new Set(certificates.map((c) => c.issuer)));
     return ['all', ...list];
-  }, []);
+  }, [certificates]);
 
   const filtered = useMemo(() => {
-    return INITIAL_CERTIFICATES.filter((item) => {
+    return certificates.filter((item) => {
       const matchSearch =
         search === '' ||
         item.student_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -156,16 +172,16 @@ export default function CertificationsPage() {
 
       return matchSearch && matchStatus && matchIssuer;
     });
-  }, [search, statusFilter, issuerFilter]);
+  }, [certificates, search, statusFilter, issuerFilter]);
 
   const stats = useMemo(() => {
     return {
-      total: INITIAL_CERTIFICATES.length,
-      verified: INITIAL_CERTIFICATES.filter((c) => c.verification_status === 'verified').length,
-      awaiting: INITIAL_CERTIFICATES.filter((c) => c.verification_status === 'awaiting').length,
-      rejected: INITIAL_CERTIFICATES.filter((c) => c.verification_status === 'rejected').length,
+      total: certificates.length,
+      verified: certificates.filter((c) => c.verification_status === 'verified').length,
+      awaiting: certificates.filter((c) => c.verification_status === 'awaiting').length,
+      rejected: certificates.filter((c) => c.verification_status === 'rejected').length,
     };
-  }, []);
+  }, [certificates]);
 
   const handleExportCSV = () => {
     const header = 'Register Number,Student Name,Year,Section,Certificate Title,Issuer,Credential ID,Issue Date,Status\n';
@@ -183,9 +199,61 @@ export default function CertificationsPage() {
     link.click();
   };
 
+  const handleOnlineVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!verifyInput.trim()) return;
+    const match = certificates.find(
+      (c) =>
+        c.credential_id.toLowerCase() === verifyInput.trim().toLowerCase() ||
+        c.register_number.toLowerCase() === verifyInput.trim().toLowerCase()
+    );
+    if (match) {
+      setVerifyResult({ found: true, cert: match });
+    } else {
+      setVerifyResult({ found: false });
+    }
+  };
+
+  const handleAddCertSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const created: CertificateRecord = {
+      id: `cert-${Date.now()}`,
+      student_name: newCert.student_name,
+      register_number: newCert.register_number.toUpperCase(),
+      year: newCert.year,
+      section: newCert.section,
+      title: newCert.title,
+      issuer: newCert.issuer,
+      credential_id: newCert.credential_id || `NEC-CERT-${Math.floor(100000 + Math.random() * 900000)}`,
+      issue_date: new Date().toISOString().slice(0, 10),
+      verification_status: 'awaiting',
+    };
+    setCertificates([created, ...certificates]);
+    setAddCertModalOpen(false);
+    setToastMessage(`Certificate "${created.title}" registered. Awaiting faculty verification.`);
+    setNewCert({
+      student_name: '',
+      register_number: '',
+      year: 3,
+      section: 'A',
+      title: '',
+      issuer: 'TryHackMe',
+      credential_id: '',
+    });
+    setTimeout(() => setToastMessage(null), 4000);
+  };
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
-      {/* Header with Semantic H1 */}
+    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in pb-12">
+      {/* Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-card border border-emerald-500/40 text-foreground px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs animate-slide-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="page-title flex items-center gap-2">
@@ -196,13 +264,80 @@ export default function CertificationsPage() {
             Verified student cybersecurity credentials, professional certifications, and validation registry.
           </p>
         </div>
-        <button
-          onClick={handleExportCSV}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-card border border-border hover:bg-accent text-sm font-medium transition-colors"
-        >
-          <Download className="w-4 h-4 text-muted-foreground" />
-          Export Registry (.CSV)
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-card border border-border hover:bg-accent text-xs font-semibold transition-colors shadow-sm"
+          >
+            <Download className="w-4 h-4 text-muted-foreground" />
+            Export Registry (.CSV)
+          </button>
+          <button
+            onClick={() => setAddCertModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20"
+          >
+            <Plus className="w-4 h-4" />
+            Register Credential
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Verifier & Audit Lookup Tool */}
+      <div className="glass-card p-4 sm:p-5 border border-primary/25 bg-gradient-to-r from-card via-card to-primary/5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-primary">Instant Credential Validator</h2>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Verify any student certificate authenticity by credential ID or register number.
+            </p>
+          </div>
+
+          <form onSubmit={handleOnlineVerify} className="flex items-center gap-2 w-full md:w-auto">
+            <div className="relative flex-1 md:w-72">
+              <Hash className="w-3.5 h-3.5 absolute left-3 top-2.5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Enter Credential ID (e.g. THM-PRESEC-948123)..."
+                value={verifyInput}
+                onChange={(e) => setVerifyInput(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 bg-background border border-input rounded-lg text-xs font-mono focus:outline-none focus:ring-1 focus:ring-primary/50"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-3.5 py-1.5 bg-primary text-primary-foreground font-bold text-xs rounded-lg hover:bg-primary/90 transition-colors shrink-0"
+            >
+              Verify Now
+            </button>
+          </form>
+        </div>
+
+        {verifyResult && (
+          <div className="mt-4 pt-3 border-t border-border/60 animate-fade-in">
+            {verifyResult.found && verifyResult.cert ? (
+              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 text-emerald-400">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>
+                    <strong>Authentic Credential Verified:</strong> {verifyResult.cert.title} awarded to {verifyResult.cert.student_name} ({verifyResult.cert.register_number}) by {verifyResult.cert.issuer}.
+                  </span>
+                </div>
+                <button onClick={() => setVerifyResult(null)} className="text-xs text-muted-foreground hover:text-foreground">✕</button>
+              </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between text-xs text-rose-400">
+                <div className="flex items-center gap-2.5">
+                  <XCircle className="w-4 h-4 shrink-0" />
+                  <span>No matching cryptographic record found in institutional ledger for &ldquo;{verifyInput}&rdquo;.</span>
+                </div>
+                <button onClick={() => setVerifyResult(null)} className="text-xs text-muted-foreground hover:text-foreground">✕</button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Metric Stat Cards */}
@@ -220,17 +355,19 @@ export default function CertificationsPage() {
           <p className="text-2xl font-bold mt-1 text-emerald-600 dark:text-emerald-400 tabular-nums">
             {stats.verified}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Approved for accreditation</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {Math.round((stats.verified / stats.total) * 100)}% Verified Rate
+          </p>
         </div>
         <div className="stat-card border-amber-500/20 bg-amber-500/5">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-amber-600 dark:text-amber-400 font-medium uppercase">Awaiting Review</p>
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-medium uppercase">Awaiting</p>
             <Clock className="w-4 h-4 text-amber-500" />
           </div>
           <p className="text-2xl font-bold mt-1 text-amber-600 dark:text-amber-400 tabular-nums">
             {stats.awaiting}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Pending faculty audit</p>
+          <p className="text-xs text-muted-foreground mt-1">Pending faculty review</p>
         </div>
         <div className="stat-card border-red-500/20 bg-red-500/5">
           <div className="flex items-center justify-between">
@@ -240,111 +377,102 @@ export default function CertificationsPage() {
           <p className="text-2xl font-bold mt-1 text-red-600 dark:text-red-400 tabular-nums">
             {stats.rejected}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Unverified credentials</p>
+          <p className="text-xs text-muted-foreground mt-1">Invalid or duplicate</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-card border border-border rounded-lg p-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="glass-card p-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           <input
-            type="text"
+            type="search"
+            aria-label="Search certifications"
+            placeholder="Search by student, register number, title, or credential ID…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by student, register #, certificate, ID..."
-            className="w-full pl-9 pr-3 py-2 rounded-md bg-background border border-input text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="w-full pl-9 pr-3 py-2 text-xs bg-background/80 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-muted-foreground"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Status:</span>
-          </div>
-          {(['all', 'verified', 'awaiting', 'rejected'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={cn(
-                'px-2.5 py-1 rounded text-xs font-medium capitalize transition-colors',
-                statusFilter === status
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted/70 hover:bg-muted text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {status}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <select
+            aria-label="Filter by verification status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+            className="text-xs bg-background border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
+          >
+            <option value="all">All Statuses</option>
+            <option value="verified">Verified only</option>
+            <option value="awaiting">Awaiting review</option>
+            <option value="rejected">Rejected</option>
+          </select>
 
           <select
+            aria-label="Filter by issuing body"
             value={issuerFilter}
             onChange={(e) => setIssuerFilter(e.target.value)}
-            className="text-xs bg-background border border-input rounded px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="text-xs bg-background border border-input rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
-            {issuers.map((iss) => (
-              <option key={iss} value={iss}>
-                {iss === 'all' ? 'All Issuers' : iss}
-              </option>
+            <option value="all">All Issuers</option>
+            {issuers.filter((i) => i !== 'all').map((iss) => (
+              <option key={iss} value={iss}>{iss}</option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Table List */}
-      <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+      {/* Table */}
+      <div className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full data-table">
+          <table className="w-full data-table" aria-label="Certifications table">
             <thead>
               <tr>
                 <th>Student</th>
-                <th>Certificate</th>
+                <th>Certificate Title</th>
                 <th>Issuing Body</th>
                 <th>Credential ID</th>
-                <th>Issue Date</th>
-                <th>Verification</th>
+                <th>Date</th>
+                <th>Status</th>
                 <th className="text-right">Action</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-muted-foreground text-sm">
-                    No certifications found matching your filters.
+                  <td colSpan={7} className="text-center py-8 text-muted-foreground text-xs">
+                    No certifications found matching your criteria.
                   </td>
                 </tr>
               ) : (
                 filtered.map((cert) => (
-                  <tr key={cert.id}>
+                  <tr key={cert.id} className="hover:bg-accent/40 transition-colors">
                     <td>
                       <div>
-                        <p className="font-medium text-foreground">{cert.student_name}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-semibold text-foreground">{cert.student_name}</p>
+                        <p className="text-[11px] font-mono text-muted-foreground">
                           {cert.register_number} • Year {cert.year}-{cert.section}
                         </p>
                       </div>
                     </td>
                     <td>
                       <div>
-                        <p className="font-medium text-foreground">{cert.title}</p>
-                        {cert.score && <p className="text-xs text-primary">{cert.score}</p>}
+                        <p className="font-semibold text-foreground text-xs">{cert.title}</p>
+                        {cert.score && (
+                          <span className="text-[10px] text-primary font-mono font-medium">{cert.score}</span>
+                        )}
                       </div>
                     </td>
                     <td>
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-muted text-xs font-medium">
-                        {cert.issuer}
-                      </span>
+                      <span className="text-xs font-medium text-foreground">{cert.issuer}</span>
                     </td>
                     <td>
-                      <code className="text-xs font-mono bg-accent/60 px-1.5 py-0.5 rounded text-muted-foreground">
+                      <code className="text-[11px] font-mono text-muted-foreground bg-muted/60 px-1.5 py-0.5 rounded">
                         {cert.credential_id}
                       </code>
                     </td>
                     <td>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {cert.issue_date}
-                      </div>
+                      <span className="text-xs text-muted-foreground">{cert.issue_date}</span>
                     </td>
                     <td>
                       {cert.verification_status === 'verified' && (
@@ -366,7 +494,7 @@ export default function CertificationsPage() {
                     <td className="text-right">
                       <button
                         onClick={() => setSelectedCert(cert)}
-                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-medium"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-bold"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         Details
@@ -456,6 +584,112 @@ export default function CertificationsPage() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Register Credential Modal */}
+      {addCertModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-primary" />
+                <h2 className="font-bold text-sm text-foreground">Register External Certification Record</h2>
+              </div>
+              <button
+                onClick={() => setAddCertModalOpen(false)}
+                className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCertSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Student Name</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Arunmozhi Varman"
+                    value={newCert.student_name}
+                    onChange={(e) => setNewCert({ ...newCert, student_name: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Register Number</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 731621CSR008"
+                    value={newCert.register_number}
+                    onChange={(e) => setNewCert({ ...newCert, register_number: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Certificate Title</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. CompTIA Security+ / AWS Certified Security"
+                  value={newCert.title}
+                  onChange={(e) => setNewCert({ ...newCert, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Issuing Authority</label>
+                  <select
+                    value={newCert.issuer}
+                    onChange={(e) => setNewCert({ ...newCert, issuer: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  >
+                    <option value="TryHackMe">TryHackMe</option>
+                    <option value="HackTheBox Academy">HackTheBox Academy</option>
+                    <option value="Cisco Networking Academy">Cisco Networking Academy</option>
+                    <option value="CompTIA">CompTIA</option>
+                    <option value="EC-Council">EC-Council</option>
+                    <option value="Amazon Web Services">Amazon Web Services</option>
+                    <option value="Coursera / Codered">Coursera / Codered</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Credential ID (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. THM-PRESEC-948123"
+                    value={newCert.credential_id}
+                    onChange={(e) => setNewCert({ ...newCert, credential_id: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setAddCertModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg shadow-sm"
+                >
+                  Register Credential
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

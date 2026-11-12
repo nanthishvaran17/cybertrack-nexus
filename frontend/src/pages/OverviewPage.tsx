@@ -157,7 +157,7 @@ export default function OverviewPage() {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold heading-gradient">
               Welcome back, {user?.display_name.split(' ')[0]}
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">

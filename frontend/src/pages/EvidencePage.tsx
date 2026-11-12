@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   FileCheck, CheckCircle2, XCircle, AlertCircle,
   RefreshCw, FileText, ChevronDown, Plus, X,
-  Shield, Upload, Check, Hash, Calendar, Search
+  Shield, Upload, Check, Hash, Search
 } from 'lucide-react';
 import api from '@/lib/api';
 import type { EvidenceSubmission, EvidenceType } from '@/types';
