@@ -1,9 +1,10 @@
 // HOD / Admin / Staff dashboard overview — World-class command center
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
   Users, Award, FileCheck, Activity, Globe, TrendingUp,
-  AlertCircle, RefreshCw, ArrowRight, CheckCircle2
+  AlertCircle, RefreshCw, ArrowRight, CheckCircle2, FileText
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -14,6 +15,7 @@ import type { OverviewMetrics } from '@/types';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn } from '@/lib/utils';
 import { useSEO } from '@/hooks/useSEO';
+import { ExecutiveReportModal } from '@/components/analytics/ExecutiveReportModal';
 
 function StatCard({
   label, value, icon: Icon, color, sub, trend

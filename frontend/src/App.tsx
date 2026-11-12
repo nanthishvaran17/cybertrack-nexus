@@ -136,6 +136,10 @@ export default function App() {
               path="/profile"
               element={<ProtectedShell><ProfilePage /></ProtectedShell>}
             />
+            <Route
+              path="/account"
+              element={<Navigate to="/profile" replace />}
+            />
 
             {/* Dedicated Custom 404 Route */}
             <Route
