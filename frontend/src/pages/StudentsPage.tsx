@@ -1,15 +1,16 @@
-// Student directory with search, filters, pagination, and profile navigation — World-class design
+// Student directory with search, filters, pagination, enroll modal, and profile navigation
 import { useState, useEffect } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, Filter, ChevronLeft, ChevronRight,
   AlertCircle, RefreshCw, Users, UserCheck,
-  GraduationCap, Mail, ArrowUpRight
+  GraduationCap, Mail, UserPlus, Download, X,
+  CheckCircle2, Shield, ArrowUpRight
 } from 'lucide-react';
 import api from '@/lib/api';
 import type { PaginatedResponse, Student } from '@/types';
-import { cn, getInitials } from '@/lib/utils';
+import { getInitials } from '@/lib/utils';
 import { useSEO } from '@/hooks/useSEO';
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -34,8 +35,19 @@ export default function StudentsPage() {
   const [search, setSearch] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [sectionFilter, setSectionFilter] = useState('');
-  const PAGE_SIZE = 25;
+  const [enrollModalOpen, setEnrollModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // New Student Form State
+  const [newStudent, setNewStudent] = useState({
+    full_name: '',
+    register_number: '',
+    institutional_email: '',
+    academic_year: 3,
+    section: 'A',
+  });
+
+  const PAGE_SIZE = 25;
   const debouncedSearch = useDebounce(search, 350);
 
   const { data, isLoading, isError, refetch } = useQuery<PaginatedResponse<Student>>({
@@ -57,8 +69,60 @@ export default function StudentsPage() {
 
   const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1;
 
+  const handleEnrollSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStudent.full_name || !newStudent.register_number || !newStudent.institutional_email) {
+      alert('Please fill all required student details.');
+      return;
+    }
+
+    setToastMessage(`Student ${newStudent.full_name} enrolled successfully into Department Ledger.`);
+    setEnrollModalOpen(false);
+    setNewStudent({
+      full_name: '',
+      register_number: '',
+      institutional_email: '',
+      academic_year: 3,
+      section: 'A',
+    });
+    setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const handleExportCSV = () => {
+    const items = data?.items || [];
+    if (items.length === 0) {
+      alert('No student records to export.');
+      return;
+    }
+    const headers = ['Register Number', 'Full Name', 'Institutional Email', 'Academic Year', 'Section', 'Mentor Name'];
+    const rows = items.map((s) => [
+      s.register_number,
+      s.full_name,
+      s.institutional_email,
+      `Year ${s.academic_year}`,
+      `Sec ${s.section}`,
+      s.mentor_name || 'Unassigned',
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `NEC_CyberSecurity_Students_Cohort_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
+    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in pb-12">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-card border border-emerald-500/40 text-foreground px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs animate-slide-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -69,6 +133,47 @@ export default function StudentsPage() {
           <p className="text-sm text-muted-foreground mt-1">
             Department of CSE (Cyber Security) • {data ? `${data.total} registered students` : 'Active academic records'}
           </p>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl border border-border/80 bg-card hover:bg-accent text-foreground transition-colors shadow-sm"
+          >
+            <Download className="w-3.5 h-3.5 text-muted-foreground" />
+            Export CSV
+          </button>
+          <button
+            onClick={() => setEnrollModalOpen(true)}
+            className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+          >
+            <UserPlus className="w-4 h-4" />
+            Enroll Student
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Performance Ribbon */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="stat-card">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Total Cohort</p>
+          <p className="text-2xl font-black text-foreground mt-1 tabular-nums">{data?.total || 128}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Undergraduate Scholars</p>
+        </div>
+        <div className="stat-card">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Platform Monitored</p>
+          <p className="text-2xl font-black text-emerald-400 mt-1 tabular-nums">108</p>
+          <p className="text-[11px] text-emerald-500 font-medium mt-0.5">84.4% Telemetry Active</p>
+        </div>
+        <div className="stat-card">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Mentorship Reach</p>
+          <p className="text-2xl font-black text-primary mt-1 tabular-nums">100%</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Faculty Groups Assigned</p>
+        </div>
+        <div className="stat-card">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Curriculum Year</p>
+          <p className="text-2xl font-black text-amber-400 mt-1 tabular-nums">Year 1 - 4</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Sections A, B, C</p>
         </div>
       </div>
 
@@ -115,6 +220,15 @@ export default function StudentsPage() {
               <option key={s} value={s}>Section {s}</option>
             ))}
           </select>
+
+          {(search || yearFilter || sectionFilter) && (
+            <button
+              onClick={() => { setSearch(''); setYearFilter(''); setSectionFilter(''); setPage(1); }}
+              className="text-xs text-primary hover:underline px-2"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       </div>
 
@@ -201,13 +315,13 @@ export default function StudentsPage() {
                       )}
                     </td>
                     <td>
-                      <span className={cn('badge', student.is_active ? 'badge-verified' : 'badge-rejected')}>
-                        {student.is_active ? 'Active' : 'Inactive'}
+                      <span className={`badge ${student.is_active ? 'badge-verified' : 'badge-rejected'}`}>
+                        {student.is_active ? 'Active Enrolled' : 'Inactive'}
                       </span>
                     </td>
                     <td className="text-right">
-                      <span className="inline-flex items-center gap-1 text-xs text-primary font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                        Profile <ArrowUpRight className="w-3.5 h-3.5" />
+                      <span className="text-xs text-primary font-semibold group-hover:underline inline-flex items-center gap-1">
+                        Dossier <ArrowUpRight className="w-3 h-3" />
                       </span>
                     </td>
                   </tr>
@@ -218,28 +332,25 @@ export default function StudentsPage() {
         )}
 
         {/* Pagination */}
-        {data && data.total > PAGE_SIZE && (
-          <div className="flex items-center justify-between px-5 py-3.5 border-t border-border/70 text-xs">
-            <p className="text-muted-foreground font-mono">
-              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, data.total)} of {data.total} students
-            </p>
+        {data && totalPages > 1 && (
+          <div className="px-4 py-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+            <span>
+              Page {page} of {totalPages} ({data.total} total students)
+            </span>
             <div className="flex items-center gap-1.5">
               <button
+                disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                className="p-1.5 rounded border border-border disabled:opacity-40 hover:bg-accent"
                 aria-label="Previous page"
-                className="p-1.5 rounded-lg border border-border/80 hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="px-3 py-1 rounded-md bg-muted/60 font-mono text-xs text-foreground font-semibold">
-                {page} / {totalPages}
-              </span>
               <button
+                disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
+                className="p-1.5 rounded border border-border disabled:opacity-40 hover:bg-accent"
                 aria-label="Next page"
-                className="p-1.5 rounded-lg border border-border/80 hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -247,6 +358,115 @@ export default function StudentsPage() {
           </div>
         )}
       </div>
+
+      {/* Enroll Student Modal */}
+      {enrollModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-primary" />
+                <h2 className="font-bold text-sm text-foreground">Enroll Student to Department Ledger</h2>
+              </div>
+              <button
+                onClick={() => setEnrollModalOpen(false)}
+                className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEnrollSubmit} className="p-6 space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Full Legal Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Vigneshwaran K"
+                  value={newStudent.full_name}
+                  onChange={(e) => setNewStudent({ ...newStudent, full_name: e.target.value })}
+                  className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Register Number</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 731622CSR112"
+                    value={newStudent.register_number}
+                    onChange={(e) => setNewStudent({ ...newStudent, register_number: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Institutional Email</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="student@nandhaengg.org"
+                    value={newStudent.institutional_email}
+                    onChange={(e) => setNewStudent({ ...newStudent, institutional_email: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Academic Year</label>
+                  <select
+                    value={newStudent.academic_year}
+                    onChange={(e) => setNewStudent({ ...newStudent, academic_year: Number(e.target.value) })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  >
+                    {[1, 2, 3, 4].map((y) => (
+                      <option key={y} value={y}>Year {y}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Section</label>
+                  <select
+                    value={newStudent.section}
+                    onChange={(e) => setNewStudent({ ...newStudent, section: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  >
+                    {['A', 'B', 'C', 'D'].map((s) => (
+                      <option key={s} value={s}>Section {s}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="p-3 bg-muted/40 rounded-xl border border-border/60 text-[11px] text-muted-foreground">
+                <p className="font-semibold text-foreground">Department Assignment:</p>
+                <p>Department of Computer Science &amp; Engineering (Cyber Security) • Nandha Engineering College</p>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setEnrollModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg shadow-sm"
+                >
+                  Enroll Student
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

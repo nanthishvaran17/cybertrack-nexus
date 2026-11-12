@@ -223,27 +223,23 @@ export function AppShell({ children }: { children: ReactNode }) {
           {/* Omnisearch Command Bar Trigger */}
           <button
             onClick={() => setCommandOpen(true)}
-            className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted/70 border border-border/80 hover:border-primary/40 text-xs text-muted-foreground hover:text-foreground transition-all ml-2"
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-800 border border-white/10 hover:border-primary/40 text-xs text-slate-400 hover:text-white transition-all ml-2"
           >
             <Search className="w-3.5 h-3.5 text-primary" />
-            <span className="font-medium">Search Nexus or Jump to Page...</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-card text-[10px] font-mono border border-border shadow-xs text-muted-foreground">
+            <span className="font-medium">Search or jump...</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] font-mono border border-white/10 text-slate-300">
               Ctrl K
             </kbd>
           </button>
 
           <div className="flex-1" />
 
-          {/* Live SOC Latency & Health Indicator */}
-          <div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
+          {/* Department Badge + SLA Status (unified & compact) */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-white/10 text-[11px] font-mono">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>SOC Telemetry: 14ms | 99.98% SLA</span>
-          </div>
-
-          {/* Institutional Department Pill */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/50 border border-border/80 text-[11px] font-medium text-muted-foreground">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <span>CSE (Cyber Security)</span>
+            <span className="text-slate-300 font-semibold">CSE (Cyber Security)</span>
+            <span className="text-slate-500">•</span>
+            <span className="text-emerald-400 font-semibold">99.98% SLA</span>
           </div>
 
           {/* Theme Toggle */}
