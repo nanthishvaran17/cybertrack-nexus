@@ -9,6 +9,7 @@ import {
 import api from '@/lib/api';
 import type { PaginatedResponse, Student } from '@/types';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -21,6 +22,13 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export default function StudentsPage() {
   const navigate = useNavigate();
+
+  useSEO({
+    title: 'Student Directory & Performance Roster',
+    description: 'Comprehensive student registry, cohort filters, academic years, and learning platform links for Nandha Engineering College CSE (Cyber Security).',
+    canonicalPath: '/students',
+  });
+
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [yearFilter, setYearFilter] = useState('');

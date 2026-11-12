@@ -7,10 +7,17 @@ import {
 import { TrendingUp, AlertCircle, RefreshCw } from 'lucide-react';
 import api from '@/lib/api';
 import type { OverviewMetrics } from '@/types';
+import { useSEO } from '@/hooks/useSEO';
 
 const PIE_COLORS = ['#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
 
 export default function AnalyticsPage() {
+  useSEO({
+    title: 'Department Analytics & Competency Reports',
+    description: 'Accreditation-grade analytics, platform adoption, and skill distribution for CSE (Cyber Security) at Nandha Engineering College.',
+    canonicalPath: '/analytics',
+  });
+
   const { data, isLoading, isError, refetch } = useQuery<OverviewMetrics>({
     queryKey: ['analytics', 'overview'],
     queryFn: async () => (await api.get<OverviewMetrics>('/analytics/overview')).data,

@@ -1,0 +1,17 @@
+{
+  "name": "CyberTrack Nexus",
+  "short_name": "CyberTrack",
+  "description": "Cybersecurity Education Intelligence and Continuous Verification Platform for Department of CSE (Cyber Security) at Nandha Engineering College.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#06b6d4",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

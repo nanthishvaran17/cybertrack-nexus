@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="30%" r="80%" fx="50%" fy="30%">
+      <stop offset="0%" stop-color="#0e2942" />
+      <stop offset="60%" stop-color="#030712" />
+      <stop offset="100%" stop-color="#02040a" />
+    </radialGradient>
+    <linearGradient id="cyanLine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8" stroke-opacity="0.4" />
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGlow)" />
+  <rect width="1200" height="630" fill="url(#grid)" />
+
+  <!-- Neon Border Accent -->
+  <rect x="24" y="24" width="1152" height="582" rx="16" fill="none" stroke="#0891b2" stroke-width="1.5" stroke-opacity="0.3" />
+
+  <!-- Shield Logo -->
+  <g transform="translate(100, 160)">
+    <path d="M80 20L30 45V85C30 125 55 155 80 165C105 155 130 125 130 85V45L80 20Z" fill="#0891b2" fill-opacity="0.15" stroke="url(#cyanLine)" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M80 40L45 56V86C45 118 64 140 80 148C96 140 115 118 115 86V56L80 40Z" fill="#030712" stroke="#22d3ee" stroke-width="2.5" />
+    <path d="M66 94L76 104L98 78" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Text Hierarchy -->
+  <!-- Institution Badge -->
+  <g transform="translate(280, 170)">
+    <rect width="380" height="34" rx="6" fill="#0891b2" fill-opacity="0.15" stroke="#0891b2" stroke-opacity="0.4" stroke-width="1" />
+    <text x="14" y="23" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#22d3ee" letter-spacing="1">NANDHA ENGINEERING COLLEGE (AUTONOMOUS)</text>
+  </g>
+
+  <!-- Title -->
+  <text x="280" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="800" fill="#f8fafc" letter-spacing="-1">CyberTrack Nexus</text>
+
+  <!-- Subtitle -->
+  <text x="280" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="500" fill="#94a3b8">Continuous Cybersecurity Education Intelligence Platform</text>
+  <text x="280" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="400" fill="#64748b">Department of Computer Science &amp; Engineering (Cyber Security)</text>
+
+  <!-- Feature Tags -->
+  <g transform="translate(280, 410)">
+    <!-- Tag 1 -->
+    <rect x="0" y="0" width="180" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="20" cy="21" r="5" fill="#10b981" />
+    <text x="36" y="27" font-family="sans-serif" font-size="14" font-weight="600" fill="#e2e8f0">Telemetry Sync</text>
+
+    <!-- Tag 2 -->
+    <rect x="195" y="0" width="200" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="215" cy="21" r="5" fill="#06b6d4" />
+    <text x="231" y="27" font-family="sans-serif" font-size="14" font-weight="600" fill="#e2e8f0">Evidence Hash Audit</text>
+
+    <!-- Tag 3 -->
+    <rect x="410" y="0" width="180" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="430" cy="21" r="5" fill="#f59e0b" />
+    <text x="446" y="27" font-family="sans-serif" font-size="14" font-weight="600" fill="#e2e8f0">Mentor Radar</text>
+
+    <!-- Tag 4 -->
+    <rect x="605" y="0" width="200" height="42" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="625" cy="21" r="5" fill="#8b5cf6" />
+    <text x="641" y="27" font-family="sans-serif" font-size="14" font-weight="600" fill="#e2e8f0">Accreditation Ready</text>
+  </g>
+
+  <!-- Footer Info -->
+  <text x="100" y="550" font-family="sans-serif" font-size="14" font-weight="500" fill="#475569">Domain: cybertrack.nandha.edu.in</text>
+  <text x="1100" y="550" text-anchor="end" font-family="sans-serif" font-size="14" font-weight="500" fill="#475569">CSE (Cyber Security) • NAAC A+ • NBA</text>
+</svg>

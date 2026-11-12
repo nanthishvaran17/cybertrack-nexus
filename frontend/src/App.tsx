@@ -1,22 +1,38 @@
-// App router — all routes with auth guards
+// App router — all routes with lazy loading, auth guards, and custom 404
+import { lazy, Suspense, type ReactNode, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/features/auth/AuthContext';
 import { AppShell } from '@/components/layout/AppShell';
-import LoginPage from '@/pages/LoginPage';
-import OverviewPage from '@/pages/OverviewPage';
-import StudentsPage from '@/pages/StudentsPage';
-import PlatformsPage from '@/pages/PlatformsPage';
-import EvidencePage from '@/pages/EvidencePage';
-import AnalyticsPage from '@/pages/AnalyticsPage';
-import PlaceholderPage from '@/pages/PlaceholderPage';
-import { type ReactNode, useEffect } from 'react';
+
+// Code-split route components to shrink JavaScript bundles
+const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const OverviewPage = lazy(() => import('@/pages/OverviewPage'));
+const StudentsPage = lazy(() => import('@/pages/StudentsPage'));
+const PlatformsPage = lazy(() => import('@/pages/PlatformsPage'));
+const CertificationsPage = lazy(() => import('@/pages/CertificationsPage'));
+const EvidencePage = lazy(() => import('@/pages/EvidencePage'));
+const MentorPage = lazy(() => import('@/pages/MentorPage'));
+const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'));
+const IntegrationsPage = lazy(() => import('@/pages/IntegrationsPage'));
+const AuditPage = lazy(() => import('@/pages/AuditPage'));
+const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 2, refetchOnWindowFocus: false },
   },
 });
+
+function PageLoader() {
+  return (
+    <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
+      <div className="animate-spin w-7 h-7 border-2 border-primary border-t-transparent rounded-full" />
+      <span className="text-xs font-mono text-muted-foreground animate-pulse">Initializing Nexus Node...</span>
+    </div>
+  );
+}
 
 function ThemeInit() {
   useEffect(() => {
@@ -34,7 +50,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full" />
+        <div className="animate-spin w-7 h-7 border-2 border-primary border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -45,7 +61,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
 function ProtectedShell({ children }: { children: ReactNode }) {
   return (
     <RequireAuth>
-      <AppShell>{children}</AppShell>
+      <AppShell>
+        <Suspense fallback={<PageLoader />}>{children}</Suspense>
+      </AppShell>
     </RequireAuth>
   );
 }
@@ -58,9 +76,16 @@ export default function App() {
           <ThemeInit />
           <Routes>
             {/* Public */}
-            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/login"
+              element={
+                <Suspense fallback={<PageLoader />}>
+                  <LoginPage />
+                </Suspense>
+              }
+            />
 
-            {/* Protected */}
+            {/* Protected Core Modules */}
             <Route
               path="/"
               element={<ProtectedShell><OverviewPage /></ProtectedShell>}
@@ -75,11 +100,7 @@ export default function App() {
             />
             <Route
               path="/certifications"
-              element={
-                <ProtectedShell>
-                  <PlaceholderPage title="Certifications" description="Certificate management and verification tracking across all platforms." />
-                </ProtectedShell>
-              }
+              element={<ProtectedShell><CertificationsPage /></ProtectedShell>}
             />
             <Route
               path="/evidence"
@@ -87,11 +108,7 @@ export default function App() {
             />
             <Route
               path="/mentor"
-              element={
-                <ProtectedShell>
-                  <PlaceholderPage title="Mentor Workspace" description="Assigned student overviews, follow-up tracking, and mentor notes." />
-                </ProtectedShell>
-              }
+              element={<ProtectedShell><MentorPage /></ProtectedShell>}
             />
             <Route
               path="/analytics"
@@ -99,31 +116,28 @@ export default function App() {
             />
             <Route
               path="/integrations"
-              element={
-                <ProtectedShell>
-                  <PlaceholderPage title="Integration Health" description="Platform sync status, job history, and error diagnostics." />
-                </ProtectedShell>
-              }
+              element={<ProtectedShell><IntegrationsPage /></ProtectedShell>}
             />
             <Route
               path="/audit"
-              element={
-                <ProtectedShell>
-                  <PlaceholderPage title="Audit Logs" description="Immutable record of all critical operations. HOD access only." />
-                </ProtectedShell>
-              }
+              element={<ProtectedShell><AuditPage /></ProtectedShell>}
             />
             <Route
               path="/settings"
-              element={
-                <ProtectedShell>
-                  <PlaceholderPage title="Settings" description="Department configuration, platform management, and user administration." />
-                </ProtectedShell>
-              }
+              element={<ProtectedShell><SettingsPage /></ProtectedShell>}
             />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Dedicated Custom 404 Route */}
+            <Route
+              path="/404"
+              element={<ProtectedShell><NotFoundPage /></ProtectedShell>}
+            />
+
+            {/* Wildcard Catch-all */}
+            <Route
+              path="*"
+              element={<ProtectedShell><NotFoundPage /></ProtectedShell>}
+            />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

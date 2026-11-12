@@ -9,9 +9,17 @@ import api from '@/lib/api';
 import type { EvidenceSubmission } from '@/types';
 import { cn, formatDateTime, statusBadgeClass, statusLabel } from '@/lib/utils';
 import { useAuth } from '@/features/auth/AuthContext';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function EvidencePage() {
   const { hasRole } = useAuth();
+
+  useSEO({
+    title: 'Evidence Verification & Cryptographic Review Queue',
+    description: 'Faculty review queue for student-submitted cybersecurity evidence, certificates, and CTF writeups with audit decisions.',
+    canonicalPath: '/evidence',
+  });
+
   const qc = useQueryClient();
   const [statusFilter, setStatusFilter] = useState('awaiting');
   const [reviewingId, setReviewingId] = useState<string | null>(null);

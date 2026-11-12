@@ -4,6 +4,7 @@ import { CheckCircle2, Clock, AlertTriangle, XCircle, Link } from 'lucide-react'
 import api from '@/lib/api';
 import type { Platform, PlatformAccount } from '@/types';
 import { cn, statusBadgeClass, statusLabel } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 const PLATFORM_ICONS: Record<string, string> = {
   cisco_netacad: '🌐',
@@ -21,6 +22,12 @@ function SyncStatusIcon({ status }: { status: string }) {
 }
 
 export default function PlatformsPage() {
+  useSEO({
+    title: 'Integrated Learning Platforms & CTF Trackers',
+    description: 'Track external cybersecurity learning platforms including TryHackMe, HackTheBox, Cisco NetAcad, and PortSwigger Web Security.',
+    canonicalPath: '/platforms',
+  });
+
   const { data: platforms, isLoading: pLoading } = useQuery<Platform[]>({
     queryKey: ['platforms'],
     queryFn: async () => (await api.get<Platform[]>('/platforms')).data,

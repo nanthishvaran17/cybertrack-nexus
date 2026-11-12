@@ -2,13 +2,90 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="CyberTrack Nexus — Cybersecurity Education Intelligence Platform for Nandha Engineering College, Department of CSE (Cyber Security)" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>CyberTrack Nexus | Nandha Engineering College</title>
+    <title>CyberTrack Nexus | Cybersecurity Intelligence Platform</title>
+
+    <!-- Meta Description & SEO -->
+    <meta name="description" content="CyberTrack Nexus — Continuous Cybersecurity Education Intelligence &amp; Verification Platform for Nandha Engineering College, Department of CSE (Cyber Security)." />
+    <meta name="keywords" content="CyberTrack Nexus, Nandha Engineering College, CSE Cyber Security, CTF tracking, TryHackMe, HackTheBox, LeetCode, cybersecurity education, credential verification" />
+    <meta name="author" content="Department of CSE (Cyber Security), Nandha Engineering College" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://cybertrack.nandha.edu.in/" />
+
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#06b6d4" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cybertrack.nandha.edu.in/" />
+    <meta property="og:site_name" content="CyberTrack Nexus" />
+    <meta property="og:title" content="CyberTrack Nexus | Cybersecurity Intelligence Platform" />
+    <meta property="og:description" content="Continuous student skill aggregation, CTF telemetry sync, and cryptographic evidence verification for CSE (Cyber Security)." />
+    <meta property="og:image" content="https://cybertrack.nandha.edu.in/og-image.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CyberTrack Nexus - Cybersecurity Education Intelligence Dashboard" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://cybertrack.nandha.edu.in/" />
+    <meta name="twitter:title" content="CyberTrack Nexus | Cybersecurity Intelligence Platform" />
+    <meta name="twitter:description" content="Continuous student skill aggregation, CTF telemetry sync, and cryptographic evidence verification for CSE (Cyber Security)." />
+    <meta name="twitter:image" content="https://cybertrack.nandha.edu.in/og-image.svg" />
+
+    <!-- Typography Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Structured Data (JSON-LD) - Institutional & Application Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollegeOrUniversity",
+          "@id": "https://cybertrack.nandha.edu.in/#institution",
+          "name": "Nandha Engineering College",
+          "alternateName": "NEC Erode",
+          "url": "https://nandhaengg.org",
+          "logo": "https://cybertrack.nandha.edu.in/favicon.svg",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Erode - Perundurai Main Road, Vaikkaalmedu",
+            "addressLocality": "Erode",
+            "addressRegion": "Tamil Nadu",
+            "postalCode": "638052",
+            "addressCountry": "IN"
+          },
+          "department": {
+            "@type": "EducationalOrganization",
+            "name": "Department of Computer Science and Engineering (Cyber Security)",
+            "parentOrganization": "https://cybertrack.nandha.edu.in/#institution"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://cybertrack.nandha.edu.in/#app",
+          "name": "CyberTrack Nexus",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "All modern web browsers",
+          "description": "Institutional cybersecurity education intelligence platform providing automated platform telemetry, evidence verification, and competency analytics.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "INR"
+          },
+          "publisher": {
+            "@id": "https://cybertrack.nandha.edu.in/#institution"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

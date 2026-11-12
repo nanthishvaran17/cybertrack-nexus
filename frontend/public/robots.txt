@@ -1,0 +1,23 @@
+# CyberTrack Nexus — Robots Configuration
+# https://cybertrack.nandha.edu.in
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /students
+Allow: /platforms
+Allow: /certifications
+Allow: /evidence
+Allow: /mentor
+Allow: /analytics
+Allow: /integrations
+Allow: /settings
+
+# Restrict sensitive internal APIs and endpoints
+Disallow: /api/
+Disallow: /audit/
+
+# Crawl Delay & Sitemap
+Crawl-delay: 1
+Sitemap: https://cybertrack.nandha.edu.in/sitemap.xml
+Host: cybertrack.nandha.edu.in

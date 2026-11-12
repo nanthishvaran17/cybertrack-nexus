@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn, getInitials } from '@/lib/utils';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 
 interface NavItem {
   label: string;
@@ -53,6 +54,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const NOTIFICATIONS = [
+    { id: '1', title: 'New Certificate Submitted', text: 'Dharun Kumar submitted TryHackMe Pre-Security proof.', time: '10m ago', unread: true },
+    { id: '2', title: 'Telemetry Sync Completed', text: '184 records updated from LeetCode & GitHub.', time: '1h ago', unread: true },
+    { id: '3', title: 'Intervention Flag Resolved', text: 'Bhavani K logged 2 completed labs.', time: '3h ago', unread: false },
+  ];
 
   const visibleNav = NAV_ITEMS.filter(
     (item) => !item.roles || item.roles.some((r) => hasRole(r as never))
@@ -168,18 +176,58 @@ export function AppShell({ children }: { children: ReactNode }) {
             {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
 
+          <Breadcrumbs />
+
           <div className="flex-1" />
 
           {/* Theme */}
           <ThemeToggle />
 
-          {/* Notifications placeholder */}
-          <button
-            aria-label="Notifications"
-            className="p-1.5 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground relative"
-          >
-            <Bell className="w-4 h-4" />
-          </button>
+          {/* Notifications */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNotificationsOpen((v) => !v);
+                setProfileOpen(false);
+              }}
+              aria-label="Notifications"
+              aria-expanded={notificationsOpen}
+              className="p-1.5 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground relative"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary ring-2 ring-card" />
+            </button>
+
+            {notificationsOpen && (
+              <div
+                role="region"
+                aria-label="Notifications Panel"
+                className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-lg shadow-xl z-50 p-2 space-y-1 animate-fade-in"
+              >
+                <div className="flex items-center justify-between px-2 py-1.5 border-b border-border text-xs font-semibold">
+                  <span>Notifications</span>
+                  <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-mono">2 Unread</span>
+                </div>
+                <div className="space-y-1 pt-1 max-h-64 overflow-y-auto">
+                  {NOTIFICATIONS.map((n) => (
+                    <div
+                      key={n.id}
+                      className={cn(
+                        'p-2 rounded text-xs transition-colors hover:bg-accent/70',
+                        n.unread ? 'bg-accent/40 font-medium' : 'text-muted-foreground'
+                      )}
+                    >
+                      <div className="flex items-center justify-between">
+                        <p className="text-foreground font-semibold">{n.title}</p>
+                        <span className="text-[10px] text-muted-foreground">{n.time}</span>
+                      </div>
+                      <p className="text-muted-foreground text-[11px] mt-0.5 line-clamp-2">{n.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Profile */}
           {user && (

@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 const schema = z.object({
   email: z.string().email('Enter a valid email address'),
@@ -15,6 +16,12 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
+  useSEO({
+    title: 'Sign In | CyberTrack Nexus',
+    description: 'Sign in to CyberTrack Nexus — Cybersecurity Education Intelligence Platform for Nandha Engineering College, Department of CSE (Cyber Security).',
+    canonicalPath: '/login',
+  });
+
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPw, setShowPw] = useState(false);

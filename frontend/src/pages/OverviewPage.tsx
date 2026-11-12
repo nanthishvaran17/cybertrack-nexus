@@ -12,6 +12,7 @@ import api from '@/lib/api';
 import type { OverviewMetrics } from '@/types';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 function StatCard({
   label, value, icon: Icon, color, sub
@@ -46,6 +47,12 @@ const CHART_COLORS = ['#06b6d4', '#0891b2', '#0e7490', '#155e75', '#164e63'];
 
 export default function OverviewPage() {
   const { user } = useAuth();
+
+  useSEO({
+    title: 'Department Overview & Security Intelligence',
+    description: 'Real-time department command center, active student telemetry, platform links, and evidence verification metrics for CSE (Cyber Security).',
+    canonicalPath: '/',
+  });
 
   const { data, isLoading, isError, refetch } = useQuery<OverviewMetrics>({
     queryKey: ['analytics', 'overview'],

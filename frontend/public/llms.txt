@@ -1,0 +1,49 @@
+# CyberTrack Nexus
+
+> Continuous Cybersecurity Education Intelligence & Verification Platform
+> Department of Computer Science and Engineering (Cyber Security)
+> Nandha Engineering College (Autonomous), Erode, Tamil Nadu, India
+
+## Overview
+
+CyberTrack Nexus is an institutional platform designed to monitor, aggregate, verify, and analyse practical cybersecurity skills acquisition across students enrolled in the CSE (Cyber Security) degree program. The platform ingests telemetry from competitive programming platforms, CTF war games, and cloud cybersecurity labs, providing tamper-resistant proof of student competency.
+
+## Institution & Accreditation Context
+- Institution: Nandha Engineering College (Autonomous)
+- Affiliation: Anna University, Chennai
+- Accreditation: NAAC 'A+' Grade, NBA Accredited
+- Department: Computer Science and Engineering (Cyber Security)
+- Location: Erode, Tamil Nadu 638052, India
+- Website: https://cybertrack.nandha.edu.in
+- Parent College Website: https://nandhaengg.org
+
+## Core Capabilities
+- **Platform Telemetry Ingestion**: Automated adapters for LeetCode, CodeChef, HackerRank, TryHackMe, HackTheBox, GitHub, PortSwigger Web Security Academy, and OverTheWire.
+- **Evidence Verification Pipeline**: Cryptographic hashing (SHA-256), multi-stage faculty review workflows (Awaiting, Verified, Rejected), and immutable audit logs.
+- **Mentor-Mentee Workspaces**: Cohort tracking, intervention flagging for inactive students, notes logs, and progress forecasting.
+- **Competency Analytics**: Multi-year student progression, departmental skill matrix, platform adoption ratios, and accreditation-ready reporting (NAAC Criterion 2 & NBA Criterion 4).
+- **HOD & Administrator Audit**: Granular role-based access control (HOD, Admin, Staff, Student), access revocation trails, and cryptographic record integrity.
+
+## Information Architecture & URL Slugs
+- `/`: Main department command center and high-level KPI metrics.
+- `/students`: Comprehensive student directory, academic year filters, platform link status, and profile drill-down.
+- `/platforms`: Monitored learning and CTF platform statuses, student adoption metrics, and connection endpoints.
+- `/certifications`: Verified professional certificates repository (TryHackMe, HTB, CompTIA, AWS, Cisco, etc.).
+- `/evidence`: Verification review queue for staff and HOD to inspect submitted proofs.
+- `/mentor`: Mentor workspace for faculty mentors to monitor mentee cohorts and log interventions.
+- `/analytics`: Deep analytics, problem-solving distributions, skill radars, and exportable reports.
+- `/integrations`: Platform API health, webhook triggers, sync status, and error logs.
+- `/audit`: Immutable audit trail of administrative operations and grade-impacting actions.
+- `/settings`: Department configuration, academic year parameters, platform credentials, and RBAC policies.
+- `/login`: Secure institutional single sign-on and credential authentication.
+- `/404`: Dedicated diagnostic not-found handler.
+
+## Technical Architecture
+- Frontend: Single Page Application powered by React 19, TypeScript, Tailwind CSS, Lucide Icons, TanStack Query, and Vite.
+- Backend: High-performance Python FastAPI service with SQLAlchemy 2.0 ORM, Pydantic v2 schemas, and PostgreSQL.
+- API Base: `/api/v1`
+- Authentication: JWT Bearer Tokens with role-based claims (`hod`, `admin`, `staff`, `student`).
+
+## Contacts & Support
+- Department Head: HOD CSE (Cyber Security), Nandha Engineering College
+- Technical Support: admin-cybertrack@nandhaengg.edu.in

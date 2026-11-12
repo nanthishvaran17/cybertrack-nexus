@@ -21,9 +21,12 @@ from app.models import models  # noqa: F401 — import models to register them
 
 config = context.config
 raw_db_url = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_W0ihJ1PKujEx@ep-fragrant-boat-b5bjd6aw.c-7.us-east-2.aws.neon.tech/cybertrack_nexus?sslmode=require")
+clean_url = raw_db_url.replace("postgres://", "postgresql+asyncpg://").replace("postgresql://", "postgresql+asyncpg://")
+if "sslmode=require" in clean_url:
+    clean_url = clean_url.replace("?sslmode=require", "").replace("&sslmode=require", "")
 config.set_main_option(
     "sqlalchemy.url",
-    raw_db_url.replace("postgres://", "postgresql+psycopg://").replace("postgresql://", "postgresql+psycopg://"),
+    clean_url,
 )
 
 if config.config_file_name is not None:
