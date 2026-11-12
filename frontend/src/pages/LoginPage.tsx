@@ -1,16 +1,19 @@
-// Login page — CyberTrack Nexus
+// Login page — CyberTrack Nexus World-Class Institutional Access
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import {
+  Shield, Eye, EyeOff, Loader2, AlertCircle, Key, Lock,
+  ArrowRight
+} from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn } from '@/lib/utils';
 import { useSEO } from '@/hooks/useSEO';
 
 const schema = z.object({
-  email: z.string().email('Enter a valid email address'),
+  email: z.string().email('Enter a valid institutional email address'),
   password: z.string().min(1, 'Password is required'),
 });
 type FormData = z.infer<typeof schema>;
@@ -30,6 +33,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
@@ -41,41 +45,63 @@ export default function LoginPage() {
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-        'Login failed. Please try again.';
+        'Authentication failed. Please verify credentials or connection.';
       setApiError(message);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Background pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      </div>
+  const handleQuickFill = (email: string) => {
+    setValue('email', email);
+    setValue('password', 'ChangeMe@123');
+  };
 
-      <div className="relative w-full max-w-md animate-fade-in">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 mb-4">
-            <Shield className="w-7 h-7 text-primary" />
+  return (
+    <div className="min-h-screen bg-background cyber-grid flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Ambient background glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="relative w-full max-w-md animate-fade-in space-y-6">
+        {/* Brand Header */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex relative items-center justify-center">
+            <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl animate-pulse-subtle" />
+            <div className="relative inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-card to-card/80 border border-primary/40 shadow-2xl">
+              <Shield className="w-8 h-8 text-primary" />
+            </div>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">CyberTrack Nexus</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            CSE (Cyber Security) — Nandha Engineering College
-          </p>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+              Institutional Security Gateway
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              CyberTrack Nexus
+            </h1>
+            <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+              Nandha Engineering College (Autonomous) • Department of CSE (Cyber Security)
+            </p>
+          </div>
         </div>
 
         {/* Card */}
-        <div className="bg-card border border-border rounded-xl p-8 shadow-sm">
-          <h2 className="text-lg font-semibold mb-6">Sign in to your account</h2>
+        <div className="glass-card p-7 sm:p-8 space-y-5 shadow-2xl border-primary/20">
+          <div className="border-b border-border/80 pb-4">
+            <h2 className="text-sm font-bold text-foreground tracking-tight flex items-center gap-2">
+              <Lock className="w-4 h-4 text-primary" />
+              Sign in with Department ID
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Enter your authorized college credentials to access the mesh.
+            </p>
+          </div>
 
           {apiError && (
             <div
               role="alert"
-              className="flex items-start gap-2.5 mb-5 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-sm text-destructive"
+              className="flex items-start gap-2.5 p-3 rounded-lg bg-rose-500/10 border border-rose-500/25 text-xs text-rose-400"
             >
-              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0 text-rose-400" />
               <span>{apiError}</span>
             </div>
           )}
@@ -83,7 +109,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1.5">
+              <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-1.5">
                 Institutional Email
               </label>
               <input
@@ -92,16 +118,15 @@ export default function LoginPage() {
                 autoComplete="email"
                 {...register('email')}
                 aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? 'email-error' : undefined}
                 className={cn(
-                  'w-full px-3 py-2.5 rounded-md bg-background border text-sm transition-colors',
+                  'w-full px-3.5 py-2.5 rounded-lg bg-background/80 border text-xs transition-all',
                   'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary',
                   errors.email ? 'border-destructive' : 'border-input'
                 )}
-                placeholder="you@nandhaengg.edu.in"
+                placeholder="hod@nandhaengg.edu.in"
               />
               {errors.email && (
-                <p id="email-error" role="alert" className="mt-1 text-xs text-destructive">
+                <p role="alert" className="mt-1 text-[11px] text-destructive">
                   {errors.email.message}
                 </p>
               )}
@@ -109,9 +134,11 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1.5">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="password" className="block text-xs font-semibold text-foreground">
+                  Security Passkey
+                </label>
+              </div>
               <div className="relative">
                 <input
                   id="password"
@@ -119,13 +146,12 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   {...register('password')}
                   aria-invalid={!!errors.password}
-                  aria-describedby={errors.password ? 'pw-error' : undefined}
                   className={cn(
-                    'w-full px-3 py-2.5 pr-10 rounded-md bg-background border text-sm transition-colors',
+                    'w-full px-3.5 py-2.5 pr-10 rounded-lg bg-background/80 border text-xs transition-all',
                     'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary',
                     errors.password ? 'border-destructive' : 'border-input'
                   )}
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                 />
                 <button
                   type="button"
@@ -137,7 +163,7 @@ export default function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <p id="pw-error" role="alert" className="mt-1 text-xs text-destructive">
+                <p role="alert" className="mt-1 text-[11px] text-destructive">
                   {errors.password.message}
                 </p>
               )}
@@ -148,23 +174,54 @@ export default function LoginPage() {
               type="submit"
               disabled={isSubmitting}
               className={cn(
-                'w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-md',
-                'bg-primary text-primary-foreground text-sm font-medium',
-                'hover:bg-primary/90 transition-colors',
-                'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+                'w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl',
+                'bg-primary text-primary-foreground text-xs font-bold shadow-lg shadow-cyan-500/20',
+                'hover:bg-primary/90 transition-all duration-200',
                 'disabled:opacity-50 disabled:cursor-not-allowed'
               )}
             >
-              {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-              {isSubmitting ? 'Signing in…' : 'Sign In'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Validating Key...</span>
+                </>
+              ) : (
+                <>
+                  <span>Access Command Center</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
+
+          {/* Quick Credential Pre-fill Assistance */}
+          <div className="pt-3 border-t border-border/70 space-y-2">
+            <p className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+              <Key className="w-3.5 h-3.5 text-primary" />
+              Quick-Fill Demo Credentials:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickFill('hod@nandhaengg.edu.in')}
+                className="px-2.5 py-1 rounded-md bg-muted/60 hover:bg-primary/10 hover:text-primary text-[11px] font-mono border border-border/60 transition-colors"
+              >
+                HOD Account
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickFill('admin@nandhaengg.edu.in')}
+                className="px-2.5 py-1 rounded-md bg-muted/60 hover:bg-primary/10 hover:text-primary text-[11px] font-mono border border-border/60 transition-colors"
+              >
+                Admin Account
+              </button>
+            </div>
+          </div>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Access is restricted to authorised department personnel.
-          <br />
-          Contact your administrator if you cannot log in.
+        {/* Security watermark */}
+        <p className="text-center text-[10px] font-mono text-muted-foreground/70">
+          TLS 1.3 • AES-256 SESSION TOKENS • NAAC A+ ACCREDITED
         </p>
       </div>
     </div>

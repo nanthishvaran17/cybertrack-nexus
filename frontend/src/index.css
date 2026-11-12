@@ -1,52 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── CyberTrack Nexus Design System ──────────────────────────────────────── */
+/* ── CyberTrack Nexus — World-Class Intelligence Design System ──────────── */
 
 @layer base {
   :root {
     /* Light mode tokens */
-    --background: 210 40% 98%;
+    --background: 215 30% 98%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-    --primary: 195 90% 42%;        /* cyan-600 */
+    --primary: 195 95% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 20% 95%;
+    --secondary: 215 25% 94%;
     --secondary-foreground: 222 47% 11%;
-    --muted: 215 16% 93%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 215 20% 92%;
+    --muted: 215 20% 92%;
+    --muted-foreground: 215 16% 45%;
+    --accent: 215 25% 92%;
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 88%;
-    --input: 214 32% 88%;
-    --ring: 195 90% 42%;
-    --radius: 0.5rem;
+    --border: 215 25% 88%;
+    --input: 215 25% 88%;
+    --ring: 195 95% 38%;
+    --radius: 0.625rem;
   }
 
   .dark {
-    /* Dark mode — deep navy system */
-    --background: 222 47% 5%;      /* navy-950 */
-    --foreground: 210 40% 96%;
-    --card: 222 47% 8%;            /* navy-900 */
-    --card-foreground: 210 40% 96%;
-    --primary: 193 82% 52%;        /* cyan-400 */
-    --primary-foreground: 222 47% 8%;
-    --secondary: 217 33% 14%;
+    /* Dark mode — deep command center palette */
+    --background: 222 47% 4%;       /* ultra-deep navy #030712 */
+    --foreground: 210 40% 98%;
+    --card: 222 44% 7%;            /* rich dark slate #07101e */
+    --card-foreground: 210 40% 98%;
+    --primary: 192 95% 50%;        /* neon cyan #06b6d4 */
+    --primary-foreground: 222 47% 6%;
+    --secondary: 217 33% 13%;
     --secondary-foreground: 210 40% 96%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 55%;
-    --accent: 217 33% 17%;
+    --muted: 217 30% 15%;
+    --muted-foreground: 215 20% 60%;
+    --accent: 217 33% 16%;
     --accent-foreground: 210 40% 96%;
-    --destructive: 0 62% 52%;
-    --destructive-foreground: 210 40% 96%;
-    --border: 217 33% 18%;
-    --input: 217 33% 18%;
-    --ring: 193 82% 52%;
+    --destructive: 0 75% 58%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 16%;
+    --input: 217 33% 16%;
+    --ring: 192 95% 50%;
   }
 
   * {
@@ -54,84 +54,103 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-feature-settings: 'cv11', 'ss01';
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20 selection:text-primary;
+    font-feature-settings: 'cv11', 'ss01', 'cv01';
   }
 
-  /* Scrollbar styling */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground; }
+  /* Custom high-tech scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border/80 rounded-full hover:bg-muted-foreground/60 transition-colors; }
 
-  /* Focus visible styles */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary rounded-sm;
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+    @apply outline-none ring-2 ring-primary/60 ring-offset-2 ring-offset-background;
   }
 }
 
 @layer components {
-  /* ── Sidebar ─────────────────────────────────────────────────────── */
+  /* ── Cyber Mesh & Glow Backdrops ─────────────────────────────────── */
+  .cyber-grid {
+    background-image: radial-gradient(rgba(6, 182, 212, 0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.22);
+  }
+
+  .glow-emerald {
+    box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.22);
+  }
+
+  /* ── Glass Cards & Elevators ─────────────────────────────────────── */
+  .glass-card {
+    @apply bg-card/85 backdrop-blur-xl border border-border/80 rounded-xl transition-all duration-300;
+  }
+  .glass-card:hover {
+    @apply border-primary/40 shadow-xl;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px -3px rgba(6, 182, 212, 0.12);
+  }
+
+  .stat-card {
+    @apply relative overflow-hidden bg-gradient-to-b from-card to-card/90 border border-border/80 rounded-xl p-5 transition-all duration-300 hover:border-primary/40 hover:-translate-y-0.5;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
+  }
+
+  /* ── Sidebar Navigation ─────────────────────────────────────────── */
   .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium
-           text-muted-foreground hover:text-foreground hover:bg-accent
-           transition-colors duration-150 cursor-pointer;
+    @apply relative flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-semibold
+           text-muted-foreground hover:text-foreground hover:bg-accent/60
+           transition-all duration-200 cursor-pointer;
   }
   .sidebar-link.active {
-    @apply text-primary bg-primary/10 hover:bg-primary/15;
+    @apply text-primary bg-primary/10 font-bold;
+  }
+  .sidebar-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background-color: hsl(var(--primary));
+    box-shadow: 0 0 10px hsl(var(--primary));
   }
 
-  /* ── Cards ───────────────────────────────────────────────────────── */
-  .stat-card {
-    @apply bg-card border border-border rounded-lg p-5 space-y-1;
+  /* ── High-Contrast Status Badges ────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide uppercase;
   }
+  .badge-verified   { @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shadow-sm; }
+  .badge-pending    { @apply bg-amber-500/10 text-amber-400 border border-amber-500/25 shadow-sm; }
+  .badge-rejected   { @apply bg-rose-500/10 text-rose-400 border border-rose-500/25 shadow-sm; }
+  .badge-connected  { @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shadow-sm; }
+  .badge-stale      { @apply bg-amber-500/10 text-amber-400 border border-amber-500/25 shadow-sm; }
+  .badge-failed     { @apply bg-rose-500/10 text-rose-400 border border-rose-500/25 shadow-sm; }
+  .badge-unverified { @apply bg-slate-500/10 text-slate-400 border border-slate-500/25; }
+  .badge-syncing    { @apply bg-sky-500/10 text-sky-400 border border-sky-500/25 animate-pulse; }
 
-  /* ── Tables ──────────────────────────────────────────────────────── */
+  /* ── Modern Tables ──────────────────────────────────────────────── */
   .data-table th {
-    @apply text-xs font-semibold text-muted-foreground uppercase tracking-wide
-           px-4 py-3 text-left border-b border-border;
+    @apply text-[11px] font-bold text-muted-foreground uppercase tracking-wider
+           px-4 py-3.5 text-left border-b border-border bg-card/60 backdrop-blur-md;
   }
   .data-table td {
-    @apply px-4 py-3 text-sm border-b border-border/50;
+    @apply px-4 py-3.5 text-xs border-b border-border/40;
   }
   .data-table tr:last-child td {
     @apply border-b-0;
   }
   .data-table tbody tr {
-    @apply hover:bg-accent/50 transition-colors;
+    @apply hover:bg-accent/40 transition-colors duration-150;
   }
 
-  /* ── Status badges ───────────────────────────────────────────────── */
-  .badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
-  }
-  .badge-verified   { @apply bg-emerald-500/15 text-emerald-600 dark:text-emerald-400; }
-  .badge-pending    { @apply bg-amber-500/15 text-amber-600 dark:text-amber-400; }
-  .badge-rejected   { @apply bg-red-500/15 text-red-600 dark:text-red-400; }
-  .badge-connected  { @apply bg-emerald-500/15 text-emerald-600 dark:text-emerald-400; }
-  .badge-stale      { @apply bg-amber-500/15 text-amber-600 dark:text-amber-400; }
-  .badge-failed     { @apply bg-red-500/15 text-red-600 dark:text-red-400; }
-  .badge-unverified { @apply bg-gray-500/15 text-gray-600 dark:text-gray-400; }
-  .badge-syncing    { @apply bg-blue-500/15 text-blue-600 dark:text-blue-400; }
-
-  /* ── Loading skeleton ────────────────────────────────────────────── */
-  .skeleton {
-    @apply animate-pulse bg-muted rounded;
-  }
-
-  /* ── Section heading ─────────────────────────────────────────────── */
+  /* ── Typography & Headers ───────────────────────────────────────── */
   .page-title {
-    @apply text-2xl font-bold tracking-tight;
+    @apply text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground;
   }
   .section-title {
-    @apply text-lg font-semibold;
+    @apply text-base font-bold text-foreground tracking-tight;
   }
 }
