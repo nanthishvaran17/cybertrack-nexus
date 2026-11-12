@@ -9,6 +9,7 @@ import { AppShell } from '@/components/layout/AppShell';
 const LoginPage = lazy(() => import('@/pages/LoginPage'));
 const OverviewPage = lazy(() => import('@/pages/OverviewPage'));
 const StudentsPage = lazy(() => import('@/pages/StudentsPage'));
+const StudentDetailPage = lazy(() => import('@/pages/StudentDetailPage'));
 const PlatformsPage = lazy(() => import('@/pages/PlatformsPage'));
 const CertificationsPage = lazy(() => import('@/pages/CertificationsPage'));
 const EvidencePage = lazy(() => import('@/pages/EvidencePage'));
@@ -17,6 +18,7 @@ const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage'));
 const IntegrationsPage = lazy(() => import('@/pages/IntegrationsPage'));
 const AuditPage = lazy(() => import('@/pages/AuditPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 const queryClient = new QueryClient({
@@ -95,6 +97,10 @@ export default function App() {
               element={<ProtectedShell><StudentsPage /></ProtectedShell>}
             />
             <Route
+              path="/students/:id"
+              element={<ProtectedShell><StudentDetailPage /></ProtectedShell>}
+            />
+            <Route
               path="/platforms"
               element={<ProtectedShell><PlatformsPage /></ProtectedShell>}
             />
@@ -125,6 +131,10 @@ export default function App() {
             <Route
               path="/settings"
               element={<ProtectedShell><SettingsPage /></ProtectedShell>}
+            />
+            <Route
+              path="/profile"
+              element={<ProtectedShell><ProfilePage /></ProtectedShell>}
             />
 
             {/* Dedicated Custom 404 Route */}
